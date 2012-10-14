@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="evestarexplorer.gui.SettingsPanelController">
+  <children>
+    <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <bottom>
+        <ToolBar>
+          <items>
+            <Label text="Label" />
+            <ProgressBar prefWidth="200.0" progress="0.0" />
+          </items>
+        </ToolBar>
+      </bottom>
+      <center>
+        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+          <tabs>
+            <Tab text="Alliances">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <TableView fx:id="allianceTbl" editable="true" prefHeight="312.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                      <columns>
+                        <TableColumn editable="false" prefWidth="200.0" text="Alliance" fx:id="allyNameCol" />
+                        <TableColumn editable="false" prefWidth="75.0" text="Ticker" fx:id="allySNameCol" />
+                        <TableColumn editable="false" prefWidth="75.0" text="Members" fx:id="allyMembersCol" />
+                        <TableColumn editable="false" prefWidth="75.0" text="Standing" fx:id="allyStandingCol" />
+                      </columns>
+                    </TableView>
+                  </children>
+                </AnchorPane>
+              </content>
+            </Tab>
+            <Tab id="" text="xxx">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+          </tabs>
+        </TabPane>
+      </center>
+      <top>
+        <ToolBar>
+          <items>
+            <Button mnemonicParsing="false" text="Button" />
+          </items>
+        </ToolBar>
+      </top>
+    </BorderPane>
+  </children>
+  <stylesheets>
+    <URL value="@settingspanel.css" />
+  </stylesheets>
+</AnchorPane>

@@ -1,0 +1,20 @@
+500001	Caldari State	1000035
+500002	Minmatar Republic	1000051
+500003	Amarr Empire	1000084
+500004	Gallente Federation	1000120
+500005	Jove Empire	1000149
+500006	CONCORD Assembly	1000137
+500007	Ammatar Mandate	1000123
+500008	Khanid Kingdom	1000156
+500009	The Syndicate	1000146
+500010	Guristas Pirates	1000127
+500011	Angel Cartel	1000138
+500012	Blood Raider Covenant	1000134
+500013	The InterBus	1000148
+500014	ORE	1000129
+500015	Thukker Tribe	1000163
+500016	Servant Sisters of EVE	1000130
+500017	The Society of Conscious Thought	1000131
+500018	Mordu's Legion Command	1000128
+500019	Sansha's Nation	1000162
+500020	Serpentis	1000135

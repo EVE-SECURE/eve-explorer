@@ -1,0 +1,34 @@
+SELECT eve.getSystemNameById(stargateID) as F , eve.getSystemNameById(celestialID) as T FROM `eve`.`mapjumps` into outfile 'd:\\temp\\eve\\jumps.txt';
+
+select 
+    s.solarSystemID,
+    s.solarSystemName,
+    c.constellationName,
+    r.regionName,
+    s.security,
+    s.x/1e14 x, s.y/1e14 y, s.z/1e14 z, 
+    s.fringe, s.corridor, s.hub, 
+    s.international, s.regional, s.constellation
+from eve.mapsolarsystems as s, eve.mapregions as r, eve.mapconstellations as c
+where 
+    s.regionID < 11000000 
+    and 
+    s.regionID = r.regionID
+    and
+    s.constellationID = c.constellationID
+order by r.regionName, c.constellationName, s.solarSystemName
+into outfile 'd:\\temp\\eve\\starsystems.txt';
+
+SELECT factionID, factionName, corporationID FROM `eve`.`chrfactions` into outfile 'd:\\temp\\eve\\factions.txt';
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `getSystemNameById`(id INT(10)) RETURNS text CHARSET utf8
+    DETERMINISTIC
+BEGIN
+
+  DECLARE sname text;
+  SELECT s.solarSystemName FROM eve.mapdenormalize d, eve.mapsolarsystems s where d.solarSystemID = s.solarSystemID and d.itemId = id
+  into sname;
+  
+  return sname;
+
+END
