@@ -4,6 +4,7 @@
  */
 package evestarexplorer;
 
+import evestarexplorer.gui.AlliStandLoaderController;
 import evestarexplorer.gui.ControlPanelController;
 import evestarexplorer.gui.SettingsPanelController;
 import java.io.BufferedReader;
@@ -50,6 +51,7 @@ public class EveStarExplorer extends Application {
     
     static public ControlPanelController ctrlPanel;
     static public SettingsPanelController setPanel;
+    static public AlliStandLoaderController standLoaderPanel;
     static Stage primaryStage;
     
     public static World world;

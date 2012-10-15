@@ -5,6 +5,7 @@
 package evestarexplorer.api;
 
 import com.beimin.eveapi.eve.alliancelist.ApiAlliance;
+import java.util.Comparator;
 import java.util.Date;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
@@ -59,4 +60,42 @@ public class AllianceInfo {
     public StringProperty shortNameProperty() { return shortNameProp; }
     public LongProperty membersCountProperty() { return membersProp; }
     public IntegerProperty standingProperty() { return standProp; }
+    
+    public static class AllianceInfoCompareBySize implements Comparator<AllianceInfo>{
+
+        @Override
+        public int compare(AllianceInfo t1, AllianceInfo t2) {
+            long m1 = t1.memberCount;
+            long m2 = t2.memberCount;
+            if (m1 > m2) {
+                return -1;
+            }
+            else if (m1 < m2) {
+                return 1;
+            }
+            else {
+                return Long.compare(System.identityHashCode(t1),System.identityHashCode(t2));
+            }
+        }
+    }
+
+    public static class AllianceInfoCompareByStanding implements Comparator<AllianceInfo>{
+
+        @Override
+        public int compare(AllianceInfo t1, AllianceInfo t2) {
+            long m1 = t1.standing;
+            long m2 = t2.standing;
+            if (m1 > m2) {
+                return -1;
+            }
+            else if (m1 < m2) {
+                return 1;
+            }
+            else {
+                int res = t1.name.compareToIgnoreCase(t2.name);
+                return (res != 0) ? res : Long.compare(System.identityHashCode(t1),System.identityHashCode(t2));
+            }
+        }
+    }
+
 }

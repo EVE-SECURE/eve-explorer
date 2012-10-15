@@ -8,7 +8,6 @@ import com.beimin.eveapi.core.ApiException;
 import com.beimin.eveapi.eve.alliancelist.AllianceListParser;
 import com.beimin.eveapi.eve.alliancelist.AllianceListResponse;
 import com.beimin.eveapi.eve.alliancelist.ApiAlliance;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
@@ -49,7 +48,7 @@ public class AllianceList {
 
             timestamp = new Date();
 
-            list = new TreeSet<>(new AllianceInfoComparator());
+            list = new TreeSet<>(new AllianceInfo.AllianceInfoCompareBySize());
             index = new TreeMap<>();
             indexById = new HashMap<>();
             
@@ -65,21 +64,4 @@ public class AllianceList {
     
     public Set<AllianceInfo> getList() { return list; }
 
-    private class AllianceInfoComparator implements Comparator<AllianceInfo>{
-
-        @Override
-        public int compare(AllianceInfo t1, AllianceInfo t2) {
-            long m1 = t1.memberCount;
-            long m2 = t2.memberCount;
-            if (m1 > m2) {
-                return 1;
-            }
-            else if (m1 < m2) {
-                return -1;
-            }
-            else {
-                return Long.compare(System.identityHashCode(t1),System.identityHashCode(t2));
-            }
-        }
-    }
 }

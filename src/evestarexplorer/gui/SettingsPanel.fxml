@@ -13,8 +13,8 @@
       <bottom>
         <ToolBar>
           <items>
-            <Label text="Label" />
-            <ProgressBar prefWidth="200.0" progress="0.0" />
+            <Label text="Commands:" />
+            <Button fx:id="setStandings" mnemonicParsing="false" onAction="#setStandingClicked" text="Set Standings" />
           </items>
         </ToolBar>
       </bottom>
@@ -46,11 +46,7 @@
         </TabPane>
       </center>
       <top>
-        <ToolBar>
-          <items>
-            <Button mnemonicParsing="false" text="Button" />
-          </items>
-        </ToolBar>
+        <ToolBar />
       </top>
     </BorderPane>
   </children>

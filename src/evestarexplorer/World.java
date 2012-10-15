@@ -110,9 +110,9 @@ public class World {
             
             ApiSystemSovereignty sov = loader.sovereignty.getInfo().get(si.id);
             si.updateSovInfo(new SovInfo(sov));
-            sPanel.apiUpdated();
             
         }
+        sPanel.apiUpdated();
         
     }
     

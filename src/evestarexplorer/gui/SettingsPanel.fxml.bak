@@ -13,8 +13,8 @@
       <bottom>
         <ToolBar>
           <items>
-            <Label text="Label" />
-            <ProgressBar prefWidth="200.0" progress="0.0" />
+            <Label text="Commands:" />
+            <Button fx:id="setStandings" mnemonicParsing="false" text="Set Standings" />
           </items>
         </ToolBar>
       </bottom>
@@ -27,7 +27,7 @@
                   <children>
                     <TableView fx:id="allianceTbl" editable="true" prefHeight="312.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                       <columns>
-                        <TableColumn editable="false" prefWidth="75.0" text="Alliance" fx:id="allyNameCol" />
+                        <TableColumn editable="false" prefWidth="200.0" text="Alliance" fx:id="allyNameCol" />
                         <TableColumn editable="false" prefWidth="75.0" text="Ticker" fx:id="allySNameCol" />
                         <TableColumn editable="false" prefWidth="75.0" text="Members" fx:id="allyMembersCol" />
                         <TableColumn editable="false" prefWidth="75.0" text="Standing" fx:id="allyStandingCol" />
@@ -46,11 +46,7 @@
         </TabPane>
       </center>
       <top>
-        <ToolBar>
-          <items>
-            <Button mnemonicParsing="false" text="Button" />
-          </items>
-        </ToolBar>
+        <ToolBar />
       </top>
     </BorderPane>
   </children>

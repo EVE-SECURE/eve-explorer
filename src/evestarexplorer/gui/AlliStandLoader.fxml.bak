@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" fx:id="pane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="evestarexplorer.gui.AlliStandLoaderController">
+  <children>
+    <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <bottom>
+        <HBox alignment="BOTTOM_RIGHT" maxHeight="-Infinity" prefWidth="600.0" spacing="4.0">
+          <children>
+            <Button fx:id="updateButtton" minWidth="80.0" mnemonicParsing="false" text="Update" />
+            <Button fx:id="cancelButtton" cancelButton="true" minWidth="80.0" mnemonicParsing="false" onAction="#cancelClicked" text="Cancel" />
+          </children>
+          <padding>
+            <Insets top="4.0" />
+          </padding>
+        </HBox>
+      </bottom>
+      <center>
+        <TextArea prefWidth="200.0" wrapText="true" />
+      </center>
+      <padding>
+        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+      </padding>
+      <top>
+        <HBox prefWidth="200.0">
+          <children>
+            <Label text="Enter standing info below:">
+              <font>
+                <Font name="System Bold" size="12.0" />
+              </font>
+            </Label>
+          </children>
+          <padding>
+            <Insets bottom="4.0" top="4.0" />
+          </padding>
+        </HBox>
+      </top>
+    </BorderPane>
+  </children>
+  <stylesheets>
+    <URL value="@allistandloader.css" />
+  </stylesheets>
+</AnchorPane>
