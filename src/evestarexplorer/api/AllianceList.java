@@ -62,6 +62,8 @@ public class AllianceList {
             return list;
     }
     
-    public Set<AllianceInfo> getList() { return list; }
+    public Set<AllianceInfo> getList() { 
+        return (list != null) ? list : new TreeSet<AllianceInfo>(); 
+    }
 
 }

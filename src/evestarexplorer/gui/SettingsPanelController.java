@@ -46,8 +46,8 @@ public class SettingsPanelController implements Initializable {
     @FXML protected Button setStandings;
     
     @FXML protected void setStandingClicked() {
-        AllianceList list = ApiInfoLoader.getInstance().alliances;
-        EveStarExplorer.standLoaderPanel.updateText(list);
+//        AllianceList list = ApiInfoLoader.getInstance().alliances;
+//        EveStarExplorer.standLoaderPanel.updateText(list);
         standUpdater.show();
     }
     
@@ -56,8 +56,8 @@ public class SettingsPanelController implements Initializable {
         AllianceList list = ApiInfoLoader.getInstance().alliances;
         data = FXCollections.observableArrayList(list.getList());
         allianceTbl.setItems(data);
-        
-        EveStarExplorer.standLoaderPanel.updateText(list);
+//        
+//        EveStarExplorer.standLoaderPanel.updateText(list);
     }
     /**
      * Initializes the controller class.
@@ -83,7 +83,7 @@ public class SettingsPanelController implements Initializable {
         }
         
         standUpdater.initModality(Modality.APPLICATION_MODAL);
-        standUpdater.initStyle(StageStyle.UNDECORATED);
+        standUpdater.initStyle(StageStyle.UTILITY);
 
     }    
 }

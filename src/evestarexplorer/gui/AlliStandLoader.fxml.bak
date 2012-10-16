@@ -15,7 +15,13 @@
       <bottom>
         <HBox alignment="BOTTOM_RIGHT" maxHeight="-Infinity" prefWidth="600.0" spacing="4.0">
           <children>
-            <Button fx:id="updateButtton" minWidth="80.0" mnemonicParsing="false" text="Update" />
+            <HBox spacing="4.0" HBox.hgrow="ALWAYS">
+              <children>
+                <Button fx:id="fillWCurrentButton" mnemonicParsing="false" onAction="#fillClicked" text="Load Current" />
+                <Button fx:id="resetTo0Button" mnemonicParsing="false" onAction="#resetClicked" text="Reset to 0" />
+              </children>
+            </HBox>
+            <Button fx:id="updateButtton" minWidth="80.0" mnemonicParsing="false" onAction="#updateClicked" text="Update" />
             <Button fx:id="cancelButtton" cancelButton="true" minWidth="80.0" mnemonicParsing="false" onAction="#cancelClicked" text="Cancel" />
           </children>
           <padding>
@@ -24,7 +30,7 @@
         </HBox>
       </bottom>
       <center>
-        <TextArea prefWidth="200.0" wrapText="true" />
+        <TextArea fx:id="text" prefWidth="200.0" wrapText="true" />
       </center>
       <padding>
         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
