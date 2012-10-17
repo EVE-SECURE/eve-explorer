@@ -21,7 +21,7 @@
                 <Button fx:id="resetTo0Button" mnemonicParsing="false" onAction="#resetClicked" text="Reset to 0" />
               </children>
             </HBox>
-            <Button fx:id="updateButtton" minWidth="80.0" mnemonicParsing="false" onAction="#updateClicked" text="Update" />
+            <Button fx:id="updateButtton" minWidth="80.0" mnemonicParsing="false" onAction="#updateClicked" text="Update" underline="true" />
             <Button fx:id="cancelButtton" cancelButton="true" minWidth="80.0" mnemonicParsing="false" onAction="#cancelClicked" text="Cancel" />
           </children>
           <padding>

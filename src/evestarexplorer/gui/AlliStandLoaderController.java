@@ -34,9 +34,13 @@ public class AlliStandLoaderController implements Initializable {
     @FXML public Button updateButtton;
     @FXML public Button cancelButtton;
     @FXML public Button fillWCurrentButton;
+    @FXML public Button fillWAllButton;
     @FXML public Button resetTo0Button;
     
     @FXML protected void updateClicked() {
+
+        AllianceList list = ApiInfoLoader.getInstance().alliances;
+        
         String data = text.getText();
         if (data.length() == 0) {return;}
         
@@ -45,15 +49,36 @@ public class AlliStandLoaderController implements Initializable {
         for (String line: data.split("\n+")) {
             Matcher m = lPattern.matcher(line);
             
-            if (m.find()) {
-                String ticker = m.group(1);
-                int stand = Integer.parseInt(m.group(2));
-                
-                System.out.println(ticker + " : " + stand);
+            try {
+                if (m.find()) {
+                    String ticker = m.group(1);
+                    int stand = Integer.parseInt(m.group(2));
+
+                    if (stand <= 10 && stand >= -10) {
+
+                        AllianceInfo ai = list.get(ticker);
+
+                        if (ai.id != 0) {
+                            ai.setStanding(stand);
+                        }
+                        else {
+                            throw new Exception("Unknown ticker");
+                        }
+                    }
+                    else {
+                        throw new Exception("Standing out of range");
+                    }
+
+                }
+                else {
+                    throw new Exception("Invalid line");
+                }
             }
-            else {
-                unprocessed += line;
+            
+            catch (Exception ex) {
+                unprocessed += line + "<<<" + ex.getMessage() + "\n";
             }
+            
         }
         
         text.setText(unprocessed);
@@ -61,19 +86,24 @@ public class AlliStandLoaderController implements Initializable {
     
     @FXML protected void fillClicked() {
         AllianceList list = ApiInfoLoader.getInstance().alliances;
-        updateText(list, false);
+        updateText(list, false, false);
+    }
+    
+    @FXML protected void fillAllClicked() {
+        AllianceList list = ApiInfoLoader.getInstance().alliances;
+        updateText(list, true, false);
     }
     
     @FXML protected void resetClicked() {
         AllianceList list = ApiInfoLoader.getInstance().alliances;
-        updateText(list, false);
+        updateText(list, true, false);
     }
 
     @FXML protected void cancelClicked() {
         pane.getScene().getWindow().hide();
     }
 
-    public void updateText(AllianceList list, boolean setToZero) {
+    public void updateText(AllianceList list, boolean allEntries, boolean setToZero) {
         
         SortedSet<AllianceInfo> l = new TreeSet<>(new AllianceInfo.AllianceInfoCompareByStanding());
         l.addAll(list.getList());
@@ -81,7 +111,9 @@ public class AlliStandLoaderController implements Initializable {
         String txt = "";
         
         for (AllianceInfo i : l) {
-            txt += i.name + "["+ i.shortName +"]" + "             " + ((setToZero) ? 0 : i.standing) + '\n';
+            if (i.getStanding() != 0 || allEntries) {
+                txt += i.name + " ["+ i.shortName +"]" + "             " + ((setToZero) ? 0 : i.getStanding()) + '\n';
+            }
         }
         
         text.setText(txt);

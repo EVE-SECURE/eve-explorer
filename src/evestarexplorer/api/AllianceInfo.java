@@ -27,7 +27,7 @@ public class AllianceInfo {
     public String shortName = "???";
     public Date startDate = new Date();
 
-    public int standing = 0;
+    private int standing = 0;
 
     private StringProperty nameProp;
     private StringProperty shortNameProp;
@@ -55,12 +55,19 @@ public class AllianceInfo {
     AllianceInfo() {
         initProps();
     }
+    
+    public int getStanding() { return standing; }
+    public void setStanding(int stand) {
+        assert (stand >= -10 && stand <= 10);
+        standing = stand;
+        standProp.setValue(stand);
+    }
 
     public StringProperty fullNameProperty() { return nameProp; }
     public StringProperty shortNameProperty() { return shortNameProp; }
     public LongProperty membersCountProperty() { return membersProp; }
     public IntegerProperty standingProperty() { return standProp; }
-    
+
     public static class AllianceInfoCompareBySize implements Comparator<AllianceInfo>{
 
         @Override

@@ -32,7 +32,7 @@ public class AllianceList {
     
     public AllianceInfo get(String tiker) {
         AllianceInfo a = index.get(tiker);
-        return (a == null) ? a : new AllianceInfo();
+        return (a != null) ? a : new AllianceInfo();
     }
     
     public AllianceInfo get(long id) {
