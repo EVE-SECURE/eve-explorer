@@ -14,7 +14,7 @@
         <ToolBar>
           <items>
             <Label text="Commands:" />
-            <Button fx:id="setStandings" mnemonicParsing="false" text="Set Standings" />
+            <Button fx:id="setStandings" mnemonicParsing="false" onAction="#setStandingClicked" text="Set Standings" />
           </items>
         </ToolBar>
       </bottom>

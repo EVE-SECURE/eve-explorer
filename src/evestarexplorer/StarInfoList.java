@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author g_yaltchik
  */
-class StarInfoList extends ArrayList<StarInfo> {
+public class StarInfoList extends ArrayList<StarInfo> {
 
     List<String> toStrings() {
         List<String> res = new ArrayList<>();

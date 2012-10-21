@@ -16,7 +16,7 @@ public class SovInfo {
     private long factionId;
     private long allianceId;
     private String ownerName;
-    private String ownerId;
+    private String ownerShort;
     private boolean claimable;
     private boolean claimed;
     
@@ -27,7 +27,7 @@ public class SovInfo {
         factionId = 0;
         allianceId = 0;
         ownerName = "- unknown -";
-        ownerId = "";
+        ownerShort = "";
         claimable = false;
         claimed = false;
     }
@@ -48,26 +48,27 @@ public class SovInfo {
                 if (claimed) {
                     AllianceInfo a = apiInfo.alliances.get(allianceId);
                     ownerName = a.name;
-                    ownerId = a.shortName;
+                    ownerShort = a.shortName;
                 }
                 else {
                     ownerName = "- unclaimed -";
-                    ownerId = "---";
+                    ownerShort = "---";
                 }
             }
             else {
                 Factions.FactionInfo i = Factions.getInstance().get((int)factionId);
                 ownerName = i.name;
-                ownerId = "";
+                ownerShort = "";
             }
         }
     }
 
     
-    boolean isClaimable() { return claimable; }
-    boolean isClaimed() { return claimed; }
-    String getOwnerName() { return ownerName; }
-    String getOwnerID() { return ownerId; }
-    long getFactionID() { return factionId; }
+    public boolean isClaimable() { return claimable; }
+    public boolean isClaimed() { return claimed; }
+    public String getOwnerName() { return ownerName; }
+    public String getOwnerShort() { return ownerShort; }
+    public long getOwnerID() { return allianceId; }
+    public long getFactionID() { return factionId; }
     
 }

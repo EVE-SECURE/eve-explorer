@@ -41,6 +41,7 @@ public class SettingsPanelController implements Initializable {
     @FXML TableColumn<AllianceInfo, String> allyNameCol;
     @FXML TableColumn<AllianceInfo, String> allySNameCol;
     @FXML TableColumn<AllianceInfo, Long> allyMembersCol;
+    @FXML TableColumn<AllianceInfo, Integer> allyClaimSizeCol;
     @FXML TableColumn<AllianceInfo, Integer> allyStandingCol;
     
     @FXML protected Button setStandings;
@@ -69,6 +70,7 @@ public class SettingsPanelController implements Initializable {
         allyNameCol.setCellValueFactory(new PropertyValueFactory("fullName"));
         allySNameCol.setCellValueFactory(new PropertyValueFactory("shortName"));
         allyMembersCol.setCellValueFactory(new PropertyValueFactory("membersCount"));
+        allyClaimSizeCol.setCellValueFactory(new PropertyValueFactory("claimed"));
         allyStandingCol.setCellValueFactory(new PropertyValueFactory("standing"));
         
         allyNameCol.setComparator(String.CASE_INSENSITIVE_ORDER);

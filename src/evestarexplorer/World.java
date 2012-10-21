@@ -5,6 +5,8 @@
 package evestarexplorer;
 
 import com.beimin.eveapi.map.sovereignty.ApiSystemSovereignty;
+import evestarexplorer.api.AllianceList;
+import evestarexplorer.api.Sovereignty;
 import evestarexplorer.gui.ControlPanelController;
 import evestarexplorer.gui.SettingsPanelController;
 import java.util.ArrayList;
@@ -112,6 +114,14 @@ public class World {
             si.updateSovInfo(new SovInfo(sov));
             
         }
+        
+        Sovereignty sov = ApiInfoLoader.getInstance().sovereignty;
+        AllianceList al = ApiInfoLoader.getInstance().alliances;
+        assert sov != null;
+        assert al != null;
+        
+        al.updateSovList(starsIndex);
+        
         sPanel.apiUpdated();
         
     }

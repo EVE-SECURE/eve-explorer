@@ -18,6 +18,7 @@
             <HBox spacing="4.0" HBox.hgrow="ALWAYS">
               <children>
                 <Button fx:id="fillWCurrentButton" mnemonicParsing="false" onAction="#fillClicked" text="Load Current" />
+                <Button fx:id="fillWClaimButton" mnemonicParsing="false" onAction="#fillClaimClicked" text="Load Claiming" />
                 <Button fx:id="fillWAllButton" mnemonicParsing="false" onAction="#fillAllClicked" text="Load All" />
                 <Button fx:id="resetTo0Button" mnemonicParsing="false" onAction="#resetClicked" text="Reset to 0" />
               </children>
@@ -31,7 +32,7 @@
         </HBox>
       </bottom>
       <center>
-        <TextArea fx:id="text" prefWidth="200.0" wrapText="true" />
+        <TextArea fx:id="text" prefWidth="200.0" text="Load Current - populate with alliances with non zero standing&#10;Load Claiming - populate with alliances with active sovereignty&#10;Load All - populate with all alliances&#10;&#10;Reset to 0 - load all alliances and set standind to 0&#10;&#10;Update - update alliances with data from the window" wrapText="true" />
       </center>
       <padding>
         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />

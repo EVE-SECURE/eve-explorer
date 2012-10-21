@@ -205,7 +205,7 @@ public class ControlPanelController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         EveStarExplorer.ctrlPanel = this;
         
-        final Image targetIcon = new Image(ControlPanelController.class.getResourceAsStream("images/target.png"));
+        final Image targetIcon = new Image(ControlPanelController.class.getResourceAsStream("/evestarexplorer/images/Target.png"));
         ImageView imageView1 = new ImageView(targetIcon);
         imageView1.setPreserveRatio(true);
         imageView1.setFitHeight(16);

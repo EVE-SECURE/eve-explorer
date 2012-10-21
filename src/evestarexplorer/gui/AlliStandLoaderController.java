@@ -34,6 +34,7 @@ public class AlliStandLoaderController implements Initializable {
     @FXML public Button updateButtton;
     @FXML public Button cancelButtton;
     @FXML public Button fillWCurrentButton;
+    @FXML public Button fillWClaimButton;
     @FXML public Button fillWAllButton;
     @FXML public Button resetTo0Button;
     
@@ -86,24 +87,29 @@ public class AlliStandLoaderController implements Initializable {
     
     @FXML protected void fillClicked() {
         AllianceList list = ApiInfoLoader.getInstance().alliances;
-        updateText(list, false, false);
+        updateText(list, SelectMode.ONLY_CHANGED, false);
     }
     
     @FXML protected void fillAllClicked() {
         AllianceList list = ApiInfoLoader.getInstance().alliances;
-        updateText(list, true, false);
+        updateText(list, SelectMode.SHOW_ALL, false);
+    }
+    
+    @FXML protected void fillClaimClicked() {
+        AllianceList list = ApiInfoLoader.getInstance().alliances;
+        updateText(list, SelectMode.ONLY_CLAIM, false);
     }
     
     @FXML protected void resetClicked() {
         AllianceList list = ApiInfoLoader.getInstance().alliances;
-        updateText(list, true, false);
+        updateText(list, SelectMode.SHOW_ALL, false);
     }
 
     @FXML protected void cancelClicked() {
         pane.getScene().getWindow().hide();
     }
 
-    public void updateText(AllianceList list, boolean allEntries, boolean setToZero) {
+    void updateText(AllianceList list, SelectMode mode, boolean setToZero) {
         
         SortedSet<AllianceInfo> l = new TreeSet<>(new AllianceInfo.AllianceInfoCompareByStanding());
         l.addAll(list.getList());
@@ -111,7 +117,10 @@ public class AlliStandLoaderController implements Initializable {
         String txt = "";
         
         for (AllianceInfo i : l) {
-            if (i.getStanding() != 0 || allEntries) {
+            if ((mode == SelectMode.SHOW_ALL) || 
+                (mode == SelectMode.ONLY_CHANGED &&  i.getStanding() != 0) ||
+                (mode == SelectMode.ONLY_CLAIM && i.getClaimed() != 0))
+            {
                 txt += i.name + " ["+ i.shortName +"]" + "             " + ((setToZero) ? 0 : i.getStanding()) + '\n';
             }
         }
@@ -125,5 +134,7 @@ public class AlliStandLoaderController implements Initializable {
         EveStarExplorer.standLoaderPanel = this;
         
     }
+    
+    static enum SelectMode { SHOW_ALL, ONLY_CLAIM, ONLY_CHANGED; }
     
 }

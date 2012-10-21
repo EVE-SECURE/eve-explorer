@@ -18,6 +18,7 @@
             <HBox spacing="4.0" HBox.hgrow="ALWAYS">
               <children>
                 <Button fx:id="fillWCurrentButton" mnemonicParsing="false" onAction="#fillClicked" text="Load Current" />
+                <Button fx:id="fillWAllButton" mnemonicParsing="false" onAction="#fillAllClicked" text="Load All" />
                 <Button fx:id="resetTo0Button" mnemonicParsing="false" onAction="#resetClicked" text="Reset to 0" />
               </children>
             </HBox>

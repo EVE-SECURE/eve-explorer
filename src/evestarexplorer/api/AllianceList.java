@@ -8,8 +8,13 @@ import com.beimin.eveapi.core.ApiException;
 import com.beimin.eveapi.eve.alliancelist.AllianceListParser;
 import com.beimin.eveapi.eve.alliancelist.AllianceListResponse;
 import com.beimin.eveapi.eve.alliancelist.ApiAlliance;
+import com.beimin.eveapi.map.sovereignty.ApiSystemSovereignty;
+import evestarexplorer.SovInfo;
+import evestarexplorer.StarInfo;
+import evestarexplorer.StarInfoList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -26,6 +31,36 @@ public class AllianceList {
     private TreeMap<String, AllianceInfo> index;
     private HashMap<Long, AllianceInfo> indexById;
     private Date timestamp = null;
+    
+    public void updateSovList(Map<String, StarInfo> stars) {
+        
+        HashMap<Long, StarInfoList> sovList = new HashMap<>();
+        
+        for (StarInfo si : stars.values()) {
+            
+            SovInfo sov = si.getSovInfo();
+            if (sov.isClaimed()) {
+                
+                long id = sov.getOwnerID();
+                StarInfoList sl = sovList.get(id);
+
+                if (sl == null) {
+                    sl = new StarInfoList();
+                    sovList.put(id, sl);
+                }
+
+                sl.add(si);
+            }
+        }
+        
+        for (Long l : sovList.keySet()) {
+            
+            AllianceInfo ai = indexById.get(l);
+            ai.setSovList(sovList.get(l));
+            
+        }
+        
+    }
     
     public boolean isUpdated() { return list != null; }
     public Date updatedAt() { return timestamp; }

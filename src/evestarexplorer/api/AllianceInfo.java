@@ -5,8 +5,11 @@
 package evestarexplorer.api;
 
 import com.beimin.eveapi.eve.alliancelist.ApiAlliance;
+import evestarexplorer.StarInfoList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -28,17 +31,21 @@ public class AllianceInfo {
     public Date startDate = new Date();
 
     private int standing = 0;
+    private StarInfoList sovList = new StarInfoList();
+
 
     private StringProperty nameProp;
     private StringProperty shortNameProp;
     private LongProperty membersProp;
     private IntegerProperty standProp;
+    private IntegerProperty claimedProp;
 
     private void initProps() {
         nameProp = new SimpleStringProperty(name);
         shortNameProp = new SimpleStringProperty(shortName);
         membersProp = new SimpleLongProperty(memberCount);
         standProp = new SimpleIntegerProperty(standing);
+        claimedProp = new SimpleIntegerProperty(sovList.size());
     }
         
     AllianceInfo(ApiAlliance api) {
@@ -63,10 +70,17 @@ public class AllianceInfo {
         standProp.setValue(stand);
     }
 
+    public int getClaimed() { return sovList.size(); }
+    public void setSovList(StarInfoList sov) {
+        sovList = sov;
+        claimedProp.setValue(getClaimed());
+    }
+
     public StringProperty fullNameProperty() { return nameProp; }
     public StringProperty shortNameProperty() { return shortNameProp; }
     public LongProperty membersCountProperty() { return membersProp; }
     public IntegerProperty standingProperty() { return standProp; }
+    public IntegerProperty claimedProperty() { return claimedProp; }
 
     public static class AllianceInfoCompareBySize implements Comparator<AllianceInfo>{
 

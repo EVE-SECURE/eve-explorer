@@ -30,6 +30,7 @@
                         <TableColumn editable="false" prefWidth="200.0" text="Alliance" fx:id="allyNameCol" />
                         <TableColumn editable="false" prefWidth="75.0" text="Ticker" fx:id="allySNameCol" />
                         <TableColumn editable="false" prefWidth="75.0" text="Members" fx:id="allyMembersCol" />
+                        <TableColumn editable="false" prefWidth="75.0" text="Claimed" fx:id="allyClaimSizeCol" />
                         <TableColumn editable="false" prefWidth="75.0" text="Standing" fx:id="allyStandingCol" />
                       </columns>
                     </TableView>

@@ -29,7 +29,7 @@ final public class StarInfo {
     private SovInfo sov;
     
     void updateSovInfo(SovInfo sov) { this.sov = sov; }
-    final SovInfo getSovInfo() {return sov;}
+    final public SovInfo getSovInfo() {return sov;}
     
     StarInfo(String s) {
         String[] data;
