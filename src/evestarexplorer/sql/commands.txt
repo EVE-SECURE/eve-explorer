@@ -32,3 +32,23 @@ BEGIN
   return sname;
 
 END
+
+SELECT 
+    s.solarSystemID,
+    s.solarSystemName, 
+    i.groupName,
+    m.itemName, 
+    m.x, m.y, m.z 
+FROM 
+    mapdenormalize m, 
+    mapsolarsystems s, 
+    invgroups i 
+WHERE 
+    m.regionID < 11000000
+    and
+    m.groupID in (6,7,8,9,10,15) 
+    and 
+    m.solarSystemId=s.solarSystemId
+    and
+    m.groupId=i.groupId
+into outfile 'd:\\temp\\eve\\starobjects.txt';

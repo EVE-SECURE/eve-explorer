@@ -83,6 +83,7 @@ public class AlliStandLoaderController implements Initializable {
         }
         
         text.setText(unprocessed);
+        list.persistStandings();
     }
     
     @FXML protected void fillClicked() {

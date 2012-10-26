@@ -41,7 +41,8 @@ public class World {
     
     Map<String, Star> worldStars = new HashMap<>();
     Map<String, Lane> worldLanes = new HashMap<>();
-    Map<String, StarInfo> starsIndex = new HashMap<>();
+    Map<String, StarInfo> starsIndexByName = new HashMap<>();
+    Map<Long, StarInfo> starsIndexById = new HashMap<>();
     Map<String, LaneInfo> lanesIndex = new HashMap<>();
     
     double minX = Double.MAX_VALUE;
@@ -108,9 +109,9 @@ public class World {
     void updateApiInfo() {
         
         ApiInfoLoader loader = ApiInfoLoader.getInstance();
-        for (StarInfo si : starsIndex.values()) {
+        for (StarInfo si : starsIndexByName.values()) {
             
-            ApiSystemSovereignty sov = loader.sovereignty.getInfo().get(si.id);
+            ApiSystemSovereignty sov = loader.sovereignty.getInfo().get((int)si.id);
             si.updateSovInfo(new SovInfo(sov));
             
         }
@@ -120,7 +121,7 @@ public class World {
         assert sov != null;
         assert al != null;
         
-        al.updateSovList(starsIndex);
+        al.updateSovList(starsIndexByName);
         
         sPanel.apiUpdated();
         
@@ -169,7 +170,7 @@ public class World {
     }
     
     boolean starExists(String name) {
-        return starsIndex.containsKey(name.toUpperCase());
+        return starsIndexByName.containsKey(name.toUpperCase());
     }
     
     static long searchCount = 0;
@@ -236,8 +237,8 @@ public class World {
         CompareByGateDistance cmp = new CompareByGateDistance();
         SortedSet<StarInfo> unchecked = new TreeSet<>(cmp);
         
-        StarInfo siFrom = starsIndex.get(from);
-        StarInfo siDest = starsIndex.get(dest);
+        StarInfo siFrom = starsIndexByName.get(from);
+        StarInfo siDest = starsIndexByName.get(dest);
         
         boolean zsIsOk = cPanel.gate0S_prefs.isSelected();
         boolean lsIsOk = cPanel.gateLS_prefs.isSelected();
@@ -248,7 +249,7 @@ public class World {
         boolean avoidGallente = cPanel.gateAvoidGallente.isSelected();
         boolean avoidMinmatar = cPanel.gateAvoidMinmatar.isSelected();
         
-        for (StarInfo si: starsIndex.values()) {
+        for (StarInfo si: starsIndexByName.values()) {
             if (si == siFrom) {
                 si.currentDistance = 0;
             }
@@ -266,7 +267,7 @@ public class World {
             curr.isSeenFlag = true;
             
             
-            for (StarInfo neig : curr.gates) {
+            for (StarInfo neig : curr.getGates()) {
                 
                 if (!neig.isSeenFlag) {
                     
@@ -304,7 +305,7 @@ public class World {
         while (siDest.currentDistance != 0) {
 
             StarInfo siClosest = null;
-            for (StarInfo si : siDest.gates) {
+            for (StarInfo si : siDest.getGates()) {
                 if (siClosest == null || siClosest.currentDistance > si.currentDistance) {
                     siClosest = si;
                 }
@@ -417,13 +418,25 @@ public class World {
             return;
         }
         
-        starsIndex.put(si.name.toUpperCase(), si);
+        starsIndexByName.put(si.name.toUpperCase(), si);
+        starsIndexById.put(si.id, si);
         worldStars.put(si.name.toUpperCase(), new Star(si, this));
         
         minX = Math.min(minX, si.x);
         minY = Math.min(minY, si.y);
         maxX = Math.max(maxX, si.x);
         maxY = Math.max(maxY, si.y);
+    }
+    
+    public void addStarObject(String s) {
+        StarSystemObject so = new StarSystemObject(s);
+        
+        StarInfo si = starsIndexById.get(so.systemId);
+        // мы могли найти систему Джовов, пропускаем ее
+        if (si != null) {
+            si.addStarObject(so);
+        }
+        
     }
     
     public void addLane(String s) {
@@ -441,8 +454,8 @@ public class World {
         worldLanes.put(lane.getLaneId(),lane);
         lanesIndex.put(li.id, li);
         
-        s1.info.gates.add(s2.info);
-        s2.info.gates.add(s1.info);
+        s1.info.addGate(s2.info);
+        s2.info.addGate(s1.info);
         
     }
     

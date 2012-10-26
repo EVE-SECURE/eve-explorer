@@ -4,27 +4,34 @@
  */
 package evestarexplorer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author g_yaltchik
  */
 final public class StarInfo {
-    Integer id;
     
-    public String name;
-    public String constellation;
-    public String region;
+    final long id;
     
-    public Double ss;
+    public final String name;
+    public final String constellation;
+    public final String region;
     
-    public Double x;
-    public Double y;
-    public Double z;
+    public final Double ss;
+    
+    public final Double x;
+    public final Double y;
+    public final Double z;
+    
+    final private StarInfoList gates = new StarInfoList();
+
+    final private List<StarSystemObject> starObjects = new ArrayList<>();
+
     
     boolean isSeenFlag = false;
     long currentDistance = Long.MAX_VALUE;
-    
-    StarInfoList gates = new StarInfoList();
 
     private SovInfo sov;
     
@@ -45,6 +52,15 @@ final public class StarInfo {
         
         sov = new SovInfo();
     }
+    
+    public List<StarSystemObject> getStarObjects() { return starObjects; }
+    public void addStarObject(StarSystemObject so) { 
+        assert id == so.systemId; 
+        starObjects.add(so); 
+    }
+    
+    public StarInfoList getGates() { return gates; }
+    public void addGate(StarInfo si) { gates.add(si); }
 
     double distanceTo(StarInfo si) {
         double dx = x - si.x;

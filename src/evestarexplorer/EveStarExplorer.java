@@ -283,6 +283,18 @@ public class EveStarExplorer extends Application {
             Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        s = EveStarExplorer.class.getResourceAsStream("data/starobjects.txt"); 
+        br = new BufferedReader( new InputStreamReader(s) );
+        
+        try {
+            while ((line = br.readLine()) != null) {
+                world.addStarObject(line);
+            }
+        }
+        catch (IOException ex) {
+            Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         s = EveStarExplorer.class.getResourceAsStream("data/jumps.txt"); 
         br = new BufferedReader( new InputStreamReader(s) );
         
