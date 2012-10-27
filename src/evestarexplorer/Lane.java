@@ -5,6 +5,9 @@
 package evestarexplorer;
 
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Line;
 
 /**
@@ -49,8 +52,16 @@ class Lane extends Line {
         
         if (selected) {
             
+            LinearGradient gradient1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, new Stop[] {
+                new Stop(0, Color.RED),
+                new Stop(0.2, Color.RED),
+                new Stop(0.3, Color.BLACK),
+//                new Stop(1, Color.BLACK)
+            });
+            
             Color color = new Color(0, 0, 0, 1);
-            setStroke(color);
+//            setStroke(color);
+            setStroke(gradient1);
             setStrokeWidth(1);
             
         }

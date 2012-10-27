@@ -60,7 +60,7 @@ public class World {
             @Override
             public void handle(StarExplorerEvent event) {
                 System.out.println("Path found event:");
-                System.out.println(event.path.toString());
+                System.out.println("[" + event.path.size() + "] " + event.path.toString());
                 event.consume();
                 
                 if (ph != null) {
@@ -267,7 +267,7 @@ public class World {
             curr.isSeenFlag = true;
             
             
-            for (StarInfo neig : curr.getGates()) {
+            for (StarInfo neig : curr.getNeigbors()) {
                 
                 if (!neig.isSeenFlag) {
                     
@@ -305,7 +305,7 @@ public class World {
         while (siDest.currentDistance != 0) {
 
             StarInfo siClosest = null;
-            for (StarInfo si : siDest.getGates()) {
+            for (StarInfo si : siDest.getNeigbors()) {
                 if (siClosest == null || siClosest.currentDistance > si.currentDistance) {
                     siClosest = si;
                 }
@@ -429,7 +429,7 @@ public class World {
     }
     
     public void addStarObject(String s) {
-        StarSystemObject so = new StarSystemObject(s);
+        SolarSystemObject so = new SolarSystemObject(s);
         
         StarInfo si = starsIndexById.get(so.systemId);
         // мы могли найти систему Джовов, пропускаем ее
@@ -454,8 +454,8 @@ public class World {
         worldLanes.put(lane.getLaneId(),lane);
         lanesIndex.put(li.id, li);
         
-        s1.info.addGate(s2.info);
-        s2.info.addGate(s1.info);
+        s1.addGate(s2.info);
+        s2.addGate(s1.info);
         
     }
     

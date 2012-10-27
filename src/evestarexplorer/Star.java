@@ -56,7 +56,7 @@ class Star extends Circle {
             selected = sel;
             repaintMe();
             
-            for (StarInfo si : info.getGates()) {
+            for (StarInfo si : info.getNeigbors()) {
                 world.worldLanes.get(LaneInfo.getKey(si.name, this.info.name)).setSelected(sel);
             }
         }
@@ -109,11 +109,11 @@ class Star extends Circle {
     }
 
     void addGate(StarInfo si) {
-        info.addGate(si);
+        info.addNeigbor(si);
     }
 
     StarInfoList getGates() {
-        return info.getGates();
+        return info.getNeigbors();
     }
     
 }

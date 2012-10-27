@@ -6,6 +6,7 @@ package evestarexplorer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -25,16 +26,18 @@ final public class StarInfo {
     public final Double y;
     public final Double z;
     
-    final private StarInfoList gates = new StarInfoList();
-
-    final private List<StarSystemObject> starObjects = new ArrayList<>();
-
-    
     boolean isSeenFlag = false;
     long currentDistance = Long.MAX_VALUE;
 
+    final private StarInfoList neigbors = new StarInfoList();
+    final private List<SolarSystemObject> starObjects = new ArrayList<>();
+    private boolean _hasStation = false;
+
     private SovInfo sov;
     
+    public boolean hasStation() {
+        return _hasStation;
+    }
     void updateSovInfo(SovInfo sov) { this.sov = sov; }
     final public SovInfo getSovInfo() {return sov;}
     
@@ -53,20 +56,46 @@ final public class StarInfo {
         sov = new SovInfo();
     }
     
-    public List<StarSystemObject> getStarObjects() { return starObjects; }
-    public void addStarObject(StarSystemObject so) { 
+    public List<SolarSystemObject> getStarObjects() { return starObjects; }
+    public void addStarObject(SolarSystemObject so) { 
         assert id == so.systemId; 
-        starObjects.add(so); 
+        
+        if (so.type == SolarSystemObject.Type.STATION) {
+            _hasStation = true;
+        }
+        
+        double dist = Double.MAX_VALUE;
+        for (SolarSystemObject i : starObjects) {
+            dist = Math.min(dist, i.updateNearestDistance(so));
+        }
+        so.setNearestObjectDistance(dist);
+        starObjects.add(so);
     }
     
-    public StarInfoList getGates() { return gates; }
-    public void addGate(StarInfo si) { gates.add(si); }
+    public StarInfoList getNeigbors() { return neigbors; }
+    public void addNeigbor(StarInfo si) { neigbors.add(si); }
 
     double distanceTo(StarInfo si) {
         double dx = x - si.x;
         double dy = y - si.y;
         double dz = z - si.z;
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    public SolarSystemObject findGate(String dest) {
+        
+        for (SolarSystemObject so : starObjects) {
+            // TODO: возможно нужна оптиизация поиска гейта
+            String rS = "(?i).*\\(" + Pattern.quote(dest) + "\\).*";
+            Pattern p = Pattern.compile(rS);
+            if (so.type == SolarSystemObject.Type.GATE) {
+                if (p.matcher(so.name).matches()) {
+                    return so;
+                }
+            }
+        }
+        return null;
+        
     }
     
 }
