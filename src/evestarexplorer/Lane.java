@@ -4,6 +4,8 @@
  */
 package evestarexplorer;
 
+import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -16,7 +18,6 @@ import javafx.scene.shape.Line;
  */
 class Lane extends Line {
     final LaneInfo info;
-    final World world;
     
     private boolean selected = false;
     
@@ -29,18 +30,32 @@ class Lane extends Line {
         }
     }
 
-    Lane(LaneInfo li, World world) {
+    Lane(LaneInfo li) {
         super();
-        this.world = world;
+        
         info = li;
+        
         setSmooth(true);
+        
+        
+        switch (info.type) {
+            
+            case CONSTELLATION:
+                getStrokeDashArray().addAll(2d,2d);
+                break;
+                
+            case REGION:
+                getStrokeDashArray().addAll(10d,2d);
+                break;
+                
+        }
+        
+        
         repaintMe();
-        StarInfo s1 = world.findStar(info.gate1).info;
-        StarInfo s2 = world.findStar(info.gate2).info;
-        setStartX(s1.x);
-        setStartY(s1.y);
-        setEndX(s2.x);
-        setEndY(s2.y);
+        setStartX(info.si1.x);
+        setStartY(info.si1.y);
+        setEndX(info.si2.x);
+        setEndY(info.si2.y);
         setTranslateZ(0);
     }
     
@@ -48,20 +63,39 @@ class Lane extends Line {
         return info.id;
     }
 
+    private static List<Stop> unsafeStart = new ArrayList<>();
+    private static List<Stop> unsafeEnd = new ArrayList<>();
+    {
+        unsafeStart.add(new Stop(0, Color.RED)); 
+        unsafeStart.add(new Stop(0.2, Color.RED));
+        unsafeStart.add(new Stop(0.3, Color.BLACK));
+        unsafeEnd.add(new Stop(0.7, Color.BLACK)); 
+        unsafeEnd.add(new Stop(0.8, Color.RED));
+        unsafeEnd.add(new Stop(1, Color.RED));
+    }
+        
     private void repaintMe() {
         
         if (selected) {
             
-            LinearGradient gradient1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, new Stop[] {
-                new Stop(0, Color.RED),
-                new Stop(0.2, Color.RED),
-                new Stop(0.3, Color.BLACK),
-//                new Stop(1, Color.BLACK)
-            });
+            List<Stop> stops = new ArrayList<>();
             
-            Color color = new Color(0, 0, 0, 1);
-//            setStroke(color);
-            setStroke(gradient1);
+            if (info.so1.isWarpSafe() == false) {
+                stops.addAll(unsafeStart);
+            }
+            else {
+                stops.add(new Stop(0, Color.BLACK));
+            }
+            
+            if (info.so2.isWarpSafe() == false) {
+                stops.addAll(unsafeEnd);
+            }
+            else {
+                stops.add(new Stop(1, Color.BLACK));
+            }
+            
+            LinearGradient gradient = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+            setStroke(gradient);
             setStrokeWidth(1);
             
         }

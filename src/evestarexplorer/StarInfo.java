@@ -57,7 +57,7 @@ final public class StarInfo {
     }
     
     public List<SolarSystemObject> getStarObjects() { return starObjects; }
-    public void addStarObject(SolarSystemObject so) { 
+    public void addSolarObject(SolarSystemObject so) { 
         assert id == so.systemId; 
         
         if (so.type == SolarSystemObject.Type.STATION) {

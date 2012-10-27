@@ -9,12 +9,20 @@ package evestarexplorer;
  * @author g_yaltchik
  */
 final class LaneInfo {
-    String gate1;
-    String gate2;
-    String id;
+    
+    public enum Type {NORMAL, CONSTELLATION, REGION;}
+    
+    final String gate1;
+    final String gate2;
+    
+    final String id;
+    final Type type;
     
     final SolarSystemObject so1;
     final SolarSystemObject so2;
+    
+    final StarInfo si1;
+    final StarInfo si2;
     
     static String getKey(String gate1, String gate2) {
         
@@ -31,11 +39,22 @@ final class LaneInfo {
         gate2 = data[1];
         id = getKey(gate1, gate2);
 
-        Star star = EveStarExplorer.world.findStar(gate1);
-        so1 = (star != null) ? star.info.findGate(gate2) : null;
+        // ищем информацию о системе
+        // учитываем, что может быть джамп у Джовов - пропускаем
+        si1 = EveStarExplorer.world.findStarInfo(gate1);
+        so1 = (si1 != null) ? si1.findGate(gate2) : null;
 
-        star = EveStarExplorer.world.findStar(gate2);
-        so2 = (star != null) ? star.info.findGate(gate1) : null;
+        si2 = EveStarExplorer.world.findStarInfo(gate2);
+        so2 = (si2 != null) ? si2.findGate(gate1) : null;
+
+        if (si1 != null && si2 != null) {
+            if (!si1.region.equals(si2.region)) { type = Type.REGION; }
+            else if (!si1.constellation.equals(si2.constellation)) { type = Type.CONSTELLATION; }
+            else { type = Type.NORMAL; }
+        }
+        else {
+            type = Type.NORMAL;
+        }
     }
 
 }

@@ -147,6 +147,10 @@ public class World {
         return worldLanes.values();
     }
     
+    StarInfo findStarInfo(String name) {
+        return starsIndexByName.get(name.toUpperCase());
+    }
+    
     Star findStar(String name) {
         return worldStars.get(name.toUpperCase());
     }
@@ -183,7 +187,7 @@ public class World {
             s.toFront();
         }
     }
-    
+
     protected class CompareByDistanceToGoal implements Comparator {
 
         final StarInfo goal;
@@ -409,7 +413,7 @@ public class World {
         
     }
     
-    public void addStar(String s) {
+    public void addStarInfo(String s) {
         StarInfo si = new StarInfo(s);
         
         // skip Jovian regions
@@ -420,7 +424,7 @@ public class World {
         
         starsIndexByName.put(si.name.toUpperCase(), si);
         starsIndexById.put(si.id, si);
-        worldStars.put(si.name.toUpperCase(), new Star(si, this));
+//        worldStars.put(si.name.toUpperCase(), new Star(si, this));
         
         minX = Math.min(minX, si.x);
         minY = Math.min(minY, si.y);
@@ -428,13 +432,22 @@ public class World {
         maxY = Math.max(maxY, si.y);
     }
     
-    public void addStarObject(String s) {
+    public void generateStars() {
+        
+        worldStars.clear();
+        for (StarInfo si : starsIndexById.values()) {
+            worldStars.put(si.name.toUpperCase(), new Star(si, this));
+        }
+        
+    }
+    
+    public void addSolarObject(String s) {
         SolarSystemObject so = new SolarSystemObject(s);
         
         StarInfo si = starsIndexById.get(so.systemId);
         // мы могли найти систему Джовов, пропускаем ее
         if (si != null) {
-            si.addStarObject(so);
+            si.addSolarObject(so);
         }
         
     }
@@ -450,7 +463,7 @@ public class World {
             return;
         }
         
-        Lane lane = new Lane(li, this);
+        Lane lane = new Lane(li);
         worldLanes.put(lane.getLaneId(),lane);
         lanesIndex.put(li.id, li);
         

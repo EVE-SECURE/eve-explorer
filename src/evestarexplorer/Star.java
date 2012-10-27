@@ -7,16 +7,14 @@ package evestarexplorer;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.RadialGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 
 /**
  *
  * @author g_yaltchik
  */
-class Star extends Circle {
+class Star extends Rectangle {
     final StarInfo info;
     final World world;
     boolean selected = false;
@@ -24,31 +22,16 @@ class Star extends Circle {
     private void repaintMe() {
         
         Color color = DispUtil.ssColor(info.ss);
-        RadialGradient gr;
         if (selected) {
-        
-            gr = new RadialGradient(0, 0, 0.5, 0.5, 1, true, CycleMethod.NO_CYCLE, new Stop[] {
-                        new Stop(0, color)
-                    });
-            
             setStroke(Color.BLACK);
             setStrokeWidth(0.5);
-            
         }
         else {
-            
-            gr = new RadialGradient(0, 0, 0.5, 0.5, 1, true, CycleMethod.NO_CYCLE, new Stop[] {
-                        new Stop(0, color),
-                        new Stop(0.5, new Color(color.getRed(), color.getGreen(), color.getBlue(), 0)),
-                        new Stop(1, Color.TRANSPARENT)
-                    });
-            
             setStroke(Color.TRANSPARENT);
             setStrokeWidth(0);
-            
         }
         
-        setFill(gr);
+        setFill(color);
     }
     
     void setSelected(boolean sel) {
@@ -68,12 +51,22 @@ class Star extends Circle {
         this.world = world;
         info = si;
         
-        double size = 4;
-        //final Star self = this;
-        setRadius(size);
+        double size = 5;
+        
+        setHeight(size);
+        setWidth(size);
+        setStrokeType(StrokeType.OUTSIDE);
+        
+        if (info.hasStation() == false) {
+            setArcHeight(size);
+            setArcWidth(size);
+        }
+        
         setSmooth(true);
         repaintMe();
         
+        setLayoutX(-size/2);
+        setLayoutY(-size/2);
         setTranslateX(info.x);
         setTranslateY(info.y);
         setTranslateZ(0);

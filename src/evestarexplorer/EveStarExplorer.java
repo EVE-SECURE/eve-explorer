@@ -47,7 +47,7 @@ public class EveStarExplorer extends Application {
     double scale = 1;
     double scaleMin = 1;
     double scaleMax = 10;
-    double scaleStep = 1.1;
+    double scaleStep = 1.2;
     
     static public ControlPanelController ctrlPanel;
     static public SettingsPanelController setPanel;
@@ -276,7 +276,7 @@ public class EveStarExplorer extends Application {
         
         try {
             while ((line = br.readLine()) != null) {
-                world.addStar(line);
+                world.addStarInfo(line);
             }
         }
         catch (IOException ex) {
@@ -288,12 +288,14 @@ public class EveStarExplorer extends Application {
         
         try {
             while ((line = br.readLine()) != null) {
-                world.addStarObject(line);
+                world.addSolarObject(line);
             }
         }
         catch (IOException ex) {
             Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        world.generateStars();
 
         s = EveStarExplorer.class.getResourceAsStream("data/jumps.txt"); 
         br = new BufferedReader( new InputStreamReader(s) );
@@ -306,7 +308,7 @@ public class EveStarExplorer extends Application {
         catch (IOException ex) {
             Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         Group g = new Group();
         g.getChildren().addAll(world.getStars());
         g.getChildren().addAll(world.getLanes());

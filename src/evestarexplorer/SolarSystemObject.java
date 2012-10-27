@@ -9,7 +9,7 @@ package evestarexplorer;
  * @author gyv
  */
 public class SolarSystemObject {
-    
+
     public enum Type {  NONE, SUN, PLANET, MOON, BELT, GATE, STATION; 
     
         public static Type getType(String s) {
@@ -35,6 +35,10 @@ public class SolarSystemObject {
     
     private double nearestObjectDistance = Double.MAX_VALUE;
 
+    public boolean isWarpSafe() {
+        return (nearestObjectDistance < WarpSafety.DSCAN_RANGE);
+    }
+    
     public double getNearestObjectDistance() { return nearestObjectDistance; }
     public void setNearestObjectDistance(double nearestObjectDistance) {
         this.nearestObjectDistance = nearestObjectDistance;
@@ -50,15 +54,16 @@ public class SolarSystemObject {
      * новая дистанция до объекта
      */
     public double updateNearestDistance(SolarSystemObject so) {
-        nearestObjectDistance = Math.min(nearestObjectDistance, this.distance(so));
-        return nearestObjectDistance;
+        double dist = this.distance(so);
+        nearestObjectDistance = Math.min(nearestObjectDistance, dist);
+        return dist;
     }
     
     public double distance(SolarSystemObject so) {
         double dx = this.x - so.x;
         double dy = this.y - so.y;
         double dz = this.z - so.z;
-        return Math.sqrt(dx*dx + dy*dy +dz*dz);
+        return Math.sqrt(dx*dx + dy*dy + dz*dz);
     }
     
     public SolarSystemObject(String s) {
