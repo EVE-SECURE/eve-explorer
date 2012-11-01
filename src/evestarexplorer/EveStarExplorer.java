@@ -6,6 +6,7 @@ package evestarexplorer;
 
 import evestarexplorer.gui.AlliStandLoaderController;
 import evestarexplorer.gui.ControlPanelController;
+import evestarexplorer.gui.LoadingSplashController;
 import evestarexplorer.gui.SettingsPanelController;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +27,9 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -49,6 +52,7 @@ public class EveStarExplorer extends Application {
     double scaleMax = 10;
     double scaleStep = 1.2;
     
+    static public LoadingSplashController splashPanel;
     static public ControlPanelController ctrlPanel;
     static public SettingsPanelController setPanel;
     static public AlliStandLoaderController standLoaderPanel;
@@ -136,6 +140,20 @@ public class EveStarExplorer extends Application {
             
         }
 
+    }
+    
+
+    
+    private Stage initSplashPanel() {
+        final Stage stage = new Stage();
+        try {
+            Parent ctrlPane = FXMLLoader.load(getClass().getResource("gui/LoadingSplash.fxml"));
+            Scene scene = new Scene(ctrlPane);
+            stage.setScene(scene);
+        } catch (IOException ex) {
+            Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return stage;
     }
     
     private Stage initControlPanel() {
@@ -321,14 +339,23 @@ public class EveStarExplorer extends Application {
     public void start(Stage primaryStage) {
         
         EveStarExplorer.primaryStage = primaryStage;
+        
+        Stage spl = initSplashPanel();
         Stage cp = initControlPanel();
         Stage sp = initSettingPanel();
         initMainPanel(primaryStage);
         
         resetCamera(primaryStage);
         
+        //spl.initOwner(primaryStage);
+        spl.initModality(Modality.APPLICATION_MODAL);
+        spl.initStyle(StageStyle.UNDECORATED);
+        splashPanel.setStage(spl);
+        
         cp.initOwner(primaryStage);
+        
         sp.initOwner(primaryStage);
+        
         primaryStage.show();
         cp.show();
         sp.show();

@@ -15,8 +15,10 @@ import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
@@ -74,46 +76,90 @@ public class ControlPanelController implements Initializable {
     @FXML public ToggleButton gateFindDest;
     
     
-    private void showApiStatus(Label l, ApiException ex, Date at) {
+    private void showApiStatus(final Label l, final ApiException ex, final Date at) {
         
-        if (ex == null) {
-            l.setText("OK");
-            l.setStyle("-fx-text-fill: green");
-            l.setTooltip(new Tooltip("Updated at: " + at.toString()));
-        }
-        else {
-            l.setText("ERROR");
-            l.setStyle("-fx-text-fill: red");
-            l.setTooltip(new Tooltip("Error: " + ex.toString() + "\n" + at));
-        }
+        Platform.runLater(new Runnable() {
+            @Override 
+            public void run() {
+                
+                if (ex == null) {
+                    l.setText("OK");
+                    l.setStyle("-fx-text-fill: green");
+                    l.setTooltip(new Tooltip("Updated at: " + at.toString()));
+                }
+                else {
+                    l.setText("ERROR");
+                    l.setStyle("-fx-text-fill: red");
+                    l.setTooltip(new Tooltip("Error: " + ex.toString() + "\n" + at));
+                }
+                
+            }
+        });
         
     }
     
     @FXML protected void apiUpdateClicked() {
         
-        ApiInfoLoader loader = ApiInfoLoader.getInstance();
+        LoadingSplashController splash = evestarexplorer.EveStarExplorer.splashPanel;
         
-        starField.fireEvent(new StarExplorerEvent(StarExplorerEvent.LONG_ACTION_STARTED));
-        mainPane.setDisable(true);
-        try {
-            loader.alliances.update();
-            showApiStatus(apiAllianceListStatus, null, loader.alliances.updatedAt());
+        splash.show();
+        ApiUpdateTask task = new ApiUpdateTask();
+        splash.progress.progressProperty().bind(task.progressProperty());
+        splash.info.textProperty().bind(task.messageProperty());
+        //starField.fireEvent(new StarExplorerEvent(StarExplorerEvent.LONG_ACTION_STARTED));
+        //mainPane.setDisable(true);
+        new Thread(task).start();
+        
 
-            gateAvoidVBox.setDisable(false);
-        } catch (ApiException ex) {
-            showApiStatus(apiAllianceListStatus, ex, new Date());
-        }
+
+    }
+    
+    public class ApiUpdateTask extends Task<Void> {       
         
-        try {
-            loader.sovereignty.update();
-            showApiStatus(apiSovereignityStatus, null, loader.sovereignty.updatedAt());
-        } catch (ApiException ex) {
-            showApiStatus(apiSovereignityStatus, ex, new Date());
-        }
-        mainPane.setDisable(false);
-        starField.fireEvent(new StarExplorerEvent(StarExplorerEvent.LONG_ACTION_ENDED));
-        starField.fireEvent(new StarExplorerEvent(StarExplorerEvent.API_UPDATED));
+        final LoadingSplashController splash = evestarexplorer.EveStarExplorer.splashPanel;
         
+        @Override 
+        @SuppressWarnings("SleepWhileInLoop")
+        protected Void call() throws InterruptedException {
+
+            String message = "";
+            ApiInfoLoader loader = ApiInfoLoader.getInstance();
+
+            updateProgress(-1, 1);
+            try {
+                message += "Alliance List loading ... ";
+                updateMessage(message);
+                loader.alliances.update();
+                showApiStatus(apiAllianceListStatus, null, loader.alliances.updatedAt());
+    
+                gateAvoidVBox.setDisable(false);
+            } catch (ApiException ex) {
+                showApiStatus(apiAllianceListStatus, ex, new Date());
+            }
+            message += "Ok\n";
+            updateMessage(message);
+
+            try {
+                message += "Sovereignty Info loading ... ";
+                updateMessage(message);
+                loader.sovereignty.update();
+                showApiStatus(apiSovereignityStatus, null, loader.sovereignty.updatedAt());
+            } catch (ApiException ex) {
+                showApiStatus(apiSovereignityStatus, ex, new Date());
+            }
+            message += "OK\n";
+            updateMessage(message);
+            
+            Platform.runLater(new Runnable() {
+                @Override 
+                public void run() {
+//                    starField.fireEvent(new StarExplorerEvent(StarExplorerEvent.API_UPDATED));
+//                    starField.fireEvent(new StarExplorerEvent(StarExplorerEvent.LONG_ACTION_ENDED));
+                    splash.hide();
+                }
+            });
+            return null;
+        }
     }
     
     public void gateStarClicked(StarInfo si) {
