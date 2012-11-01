@@ -15,13 +15,15 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.transform.Rotate;
@@ -57,6 +59,9 @@ public class EveStarExplorer extends Application {
     static public SettingsPanelController setPanel;
     static public AlliStandLoaderController standLoaderPanel;
     static Stage primaryStage;
+    static Stage ctrlPanelStage;
+    static Stage setPanelStage;
+    
     
     public static World world;
 
@@ -188,9 +193,6 @@ public class EveStarExplorer extends Application {
         stage.setTitle("EVE Star Explorer");
         stage.setScene(new Scene(rootCam, 800, 600, false));
         
-        rootCam.getChildren().add(populateWorld());
-        ctrlPanel.setStarField(rootCam);
-        
         setHandlers(stage.getScene());
     }
 
@@ -232,6 +234,21 @@ public class EveStarExplorer extends Application {
                     rootCam.moveCamPos(-dX, -dY);
                 }
             }
+        });
+        
+        s.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                if(event.getButton().equals(MouseButton.PRIMARY) && (event.getClickCount() == 2))
+                {
+                    ctrlPanelStage.show();
+                    ctrlPanelStage.setIconified(false);
+                    setPanelStage.show();
+                    setPanelStage.setIconified(false);
+                }
+            }
+
         });
         
         s.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -286,53 +303,106 @@ public class EveStarExplorer extends Application {
 
     }
     
-    Node populateWorld() {
+    final static long STARS_COUNT = 5432;
+    final static long STAROBJECTS_COUNT = 362274;
+    final static long LANES_COUNT = 14335;
+    
+    @SuppressWarnings("SleepWhileInLoop")
+    void populateWorld() {
         
-        String line;
-        InputStream s = EveStarExplorer.class.getResourceAsStream("data/starsystems.txt"); 
-        BufferedReader br = new BufferedReader( new InputStreamReader(s) );
-        
-        try {
-            while ((line = br.readLine()) != null) {
-                world.addStarInfo(line);
-            }
-        }
-        catch (IOException ex) {
-            Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Task<Void> task = new Task<Void>() {
 
-        s = EveStarExplorer.class.getResourceAsStream("data/starobjects.txt"); 
-        br = new BufferedReader( new InputStreamReader(s) );
-        
-        try {
-            while ((line = br.readLine()) != null) {
-                world.addSolarObject(line);
-            }
-        }
-        catch (IOException ex) {
-            Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            @Override
+            protected Void call() throws Exception {
+                
+                String line;
+                String message = "";
+                
+                message += "Loading stars... ";
+                updateMessage(message);
+                InputStream s = EveStarExplorer.class.getResourceAsStream("data/starsystems.txt"); 
+                BufferedReader br = new BufferedReader( new InputStreamReader(s) );
 
-        world.generateStars();
+                try {
+                    long counter = 0;
+                    while ((line = br.readLine()) != null) {
+                        counter++;
+                        world.addStarInfo(line);
+                        updateProgress(counter, STARS_COUNT);
+                    }
+                }
+                catch (IOException ex) {
+                    Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                message += "Ok\n";
+                updateMessage(message);
 
-        s = EveStarExplorer.class.getResourceAsStream("data/jumps.txt"); 
-        br = new BufferedReader( new InputStreamReader(s) );
+                message += "Loading solar systems objects... ";
+                updateMessage(message);
+                s = EveStarExplorer.class.getResourceAsStream("data/starobjects.txt"); 
+                br = new BufferedReader( new InputStreamReader(s) );
+
+                try {
+                    long counter = 0;
+                    while ((line = br.readLine()) != null) {
+                        counter++;
+                        world.addSolarObject(line);
+                        updateProgress(counter, STAROBJECTS_COUNT);
+                    }
+                }
+                catch (IOException ex) {
+                    Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                world.generateStars();
+                message += "Ok\n";
+                updateMessage(message);
+
+                message += "Loading jump lanes... ";
+                updateMessage(message);
+                s = EveStarExplorer.class.getResourceAsStream("data/jumps.txt"); 
+                br = new BufferedReader( new InputStreamReader(s) );
+
+                try {
+                    long counter = 0;
+                    while ((line = br.readLine()) != null) {
+                        counter++;
+                        world.addLane(line);
+                        updateProgress(counter, LANES_COUNT);
+                    }
+                }
+                catch (IOException ex) {
+                    Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                message += "Ok\n";
+                updateMessage(message);
+                
+                Platform.runLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Group g = new Group();
+                        g.getChildren().addAll(world.getStars());
+                        g.getChildren().addAll(world.getLanes());
+
+                        world.raiseStars();
+                        
+                        rootCam.getChildren().add(g);
+                        ctrlPanel.setStarField(rootCam);
+                        
+                        resetCamera(primaryStage);
+                        setPanelStage.show();
+                        ctrlPanelStage.show();
+                    }
+                });
+
+                return null;
+            };
+
+        };
+
+        evestarexplorer.EveStarExplorer.splashPanel.start(task);
         
-        try {
-            while ((line = br.readLine()) != null) {
-                world.addLane(line);
-            }
-        }
-        catch (IOException ex) {
-            Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        Group g = new Group();
-        g.getChildren().addAll(world.getStars());
-        g.getChildren().addAll(world.getLanes());
-        
-        world.raiseStars();
-        return g;
     }
     
     @Override
@@ -341,24 +411,24 @@ public class EveStarExplorer extends Application {
         EveStarExplorer.primaryStage = primaryStage;
         
         Stage spl = initSplashPanel();
-        Stage cp = initControlPanel();
-        Stage sp = initSettingPanel();
-        initMainPanel(primaryStage);
-        
-        resetCamera(primaryStage);
-        
-        //spl.initOwner(primaryStage);
+        spl.initOwner(primaryStage);
         spl.initModality(Modality.APPLICATION_MODAL);
         spl.initStyle(StageStyle.UNDECORATED);
         splashPanel.setStage(spl);
         
-        cp.initOwner(primaryStage);
-        
-        sp.initOwner(primaryStage);
-        
+        ctrlPanelStage = initControlPanel();
+        ctrlPanelStage.initOwner(primaryStage);
+
+        setPanelStage = initSettingPanel();
+        setPanelStage.initOwner(primaryStage);
+
+        initMainPanel(primaryStage);
+
+        resetCamera(primaryStage);
         primaryStage.show();
-        cp.show();
-        sp.show();
+        
+        populateWorld();
+        
     
     }
 

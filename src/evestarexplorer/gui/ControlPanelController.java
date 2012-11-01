@@ -30,7 +30,6 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -46,7 +45,7 @@ public class ControlPanelController implements Initializable {
         starField = field;
     }
 
-    @FXML private AnchorPane mainPane;
+    //@FXML private AnchorPane mainPane;
     @FXML public Label infoStarName;
     @FXML public Label infoConst;
     @FXML public Label infoRegion;
@@ -102,15 +101,8 @@ public class ControlPanelController implements Initializable {
         
         LoadingSplashController splash = evestarexplorer.EveStarExplorer.splashPanel;
         
-        splash.show();
         ApiUpdateTask task = new ApiUpdateTask();
-        splash.progress.progressProperty().bind(task.progressProperty());
-        splash.info.textProperty().bind(task.messageProperty());
-        //starField.fireEvent(new StarExplorerEvent(StarExplorerEvent.LONG_ACTION_STARTED));
-        //mainPane.setDisable(true);
-        new Thread(task).start();
-        
-
+        splash.start(task);
 
     }
     
@@ -153,9 +145,9 @@ public class ControlPanelController implements Initializable {
             Platform.runLater(new Runnable() {
                 @Override 
                 public void run() {
-//                    starField.fireEvent(new StarExplorerEvent(StarExplorerEvent.API_UPDATED));
+                    starField.fireEvent(new StarExplorerEvent(StarExplorerEvent.API_UPDATED));
 //                    starField.fireEvent(new StarExplorerEvent(StarExplorerEvent.LONG_ACTION_ENDED));
-                    splash.hide();
+                    //splash.hide();
                 }
             });
             return null;
