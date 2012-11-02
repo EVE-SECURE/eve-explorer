@@ -15,6 +15,9 @@
           <items>
             <Label text="Commands:" />
             <Button fx:id="setStandings" mnemonicParsing="false" onAction="#setStandingClicked" text="Set Standings" />
+            <Button id="setStandings" fx:id="jbAddBtn" mnemonicParsing="false" onAction="#setStandingClicked" text="Add JB" />
+            <Button id="setStandings" fx:id="jbImportBtn" mnemonicParsing="false" onAction="#setStandingClicked" text="Import" />
+            <Button id="setStandings" fx:id="jbDelAllBtn" mnemonicParsing="false" onAction="#setStandingClicked" text="Delete All" />
           </items>
         </ToolBar>
       </bottom>
@@ -38,9 +41,22 @@
                 </AnchorPane>
               </content>
             </Tab>
-            <Tab id="" text="xxx">
+            <Tab id="" text="JB Map">
               <content>
-                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <TableView fx:id="jbTbl" prefHeight="200.0" prefWidth="399.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                      <columns>
+                        <TableColumn prefWidth="30.0" text="A" fx:id="jbActiveCol" />
+                        <TableColumn prefWidth="180.0" text="From" fx:id="jbFromCol" />
+                        <TableColumn prefWidth="180.0" text="To" fx:id="jbToCol" />
+                        <TableColumn prefWidth="75.0" text="Alliance" fx:id="jbAllianceCol" />
+                        <TableColumn prefWidth="75.0" text="Cyno" fx:id="jbCynoCol" />
+                        <TableColumn prefWidth="75.0" text="Jamm" fx:id="jbJammCol" />
+                      </columns>
+                    </TableView>
+                  </children>
+                </AnchorPane>
               </content>
             </Tab>
           </tabs>

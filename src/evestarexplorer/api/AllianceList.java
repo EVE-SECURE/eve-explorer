@@ -33,8 +33,7 @@ public class AllianceList {
     private Date timestamp = null;
     
     private final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-    private final String prefs_key_standing = "standings";
-
+    private static final String prefs_key_standing = "standings";
     
     public void updateSovList(Map<String, StarInfo> stars) {
         
@@ -143,6 +142,7 @@ public class AllianceList {
                         ai.setStanding(stand);
                     }
                 } catch (NumberFormatException numberFormatException) {
+                    // TODO: обработать исключение
                 }
             }
         }

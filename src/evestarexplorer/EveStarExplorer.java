@@ -6,6 +6,7 @@ package evestarexplorer;
 
 import evestarexplorer.gui.AlliStandLoaderController;
 import evestarexplorer.gui.ControlPanelController;
+import evestarexplorer.gui.GeometryPersistentStage;
 import evestarexplorer.gui.LoadingSplashController;
 import evestarexplorer.gui.SettingsPanelController;
 import java.io.BufferedReader;
@@ -16,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -147,8 +150,6 @@ public class EveStarExplorer extends Application {
 
     }
     
-
-    
     private Stage initSplashPanel() {
         final Stage stage = new Stage();
         try {
@@ -162,27 +163,43 @@ public class EveStarExplorer extends Application {
     }
     
     private Stage initControlPanel() {
-        final Stage stage = new Stage();
+        
+        GeometryPersistentStage stage = null;
         try {
             Parent ctrlPane = FXMLLoader.load(getClass().getResource("gui/ControlPanel.fxml"));
             Scene scene = new Scene(ctrlPane);
-            stage.setScene(scene);
+            stage = new GeometryPersistentStage(ctrlPanel);
+            stage.setMonitoredScene(scene);
         } catch (IOException ex) {
             Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return stage;
+
     }
     
     private Stage initSettingPanel() {
-        final Stage stage = new Stage();
+
+        GeometryPersistentStage stage = null;
         try {
             Parent settingsPane = FXMLLoader.load(getClass().getResource("gui/SettingsPanel.fxml"));
             Scene scene = new Scene(settingsPane);
-            stage.setScene(scene);
+            stage = new GeometryPersistentStage(setPanel);
+            stage.setMonitoredScene(scene);
         } catch (IOException ex) {
             Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return stage;
+//        
+//        
+//        final Stage stage = new Stage();
+//        try {
+//            Parent settingsPane = FXMLLoader.load(getClass().getResource("gui/SettingsPanel.fxml"));
+//            Scene scene = new Scene(settingsPane);
+//            stage.setScene(scene);
+//        } catch (IOException ex) {
+//            Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return stage;
     }
         
     void initMainPanel(Stage stage) {
@@ -418,10 +435,10 @@ public class EveStarExplorer extends Application {
         
         ctrlPanelStage = initControlPanel();
         ctrlPanelStage.initOwner(primaryStage);
-
+        
         setPanelStage = initSettingPanel();
         setPanelStage.initOwner(primaryStage);
-
+        
         initMainPanel(primaryStage);
 
         resetCamera(primaryStage);

@@ -5,6 +5,7 @@
 package evestarexplorer;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -39,6 +40,12 @@ final public class StarInfo {
         return _hasStation;
     }
     void updateSovInfo(SovInfo sov) { this.sov = sov; }
+    
+    /**
+     * Возвращает информацию о суверенитете текущей системы.
+     * Если суверенитет не загружен, то вернет объект по умолчанию.
+     * @return
+     */
     final public SovInfo getSovInfo() {return sov;}
     
     StarInfo(String s) {
@@ -96,6 +103,22 @@ final public class StarInfo {
         }
         return null;
         
+    }
+    
+    /**
+     * Система с клаймом всегда "больше" системы без клайма
+     * Если обе системы с клаймом, или обе без, то сравниваются их id
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public int compareBySov(StarInfo si) {
+
+        if (si.getSovInfo().isClaimed() && this.getSovInfo().isClaimed()) { return Long.compare(this.id, si.id); }
+        if (this.getSovInfo().isClaimed() && !si.getSovInfo().isClaimed()) { return 1; }
+        if (si.getSovInfo().isClaimed() && !this.getSovInfo().isClaimed()) { return -1; }
+        return Long.compare(this.id, si.id);
+
     }
     
 }

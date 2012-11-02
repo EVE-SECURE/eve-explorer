@@ -6,6 +6,7 @@ package evestarexplorer.gui;
 
 import evestarexplorer.ApiInfoLoader;
 import evestarexplorer.EveStarExplorer;
+import evestarexplorer.JBInfo;
 import evestarexplorer.api.AllianceInfo;
 import evestarexplorer.api.AllianceList;
 import java.io.IOException;
@@ -13,6 +14,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,6 +31,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 /**
  * FXML Controller class
@@ -57,9 +62,22 @@ public class SettingsPanelController implements Initializable {
         AllianceList list = ApiInfoLoader.getInstance().alliances;
         data = FXCollections.observableArrayList(list.getList());
         allianceTbl.setItems(data);
-//        
-//        EveStarExplorer.standLoaderPanel.updateText(list);
     }
+    
+    // ==================================================================
+    
+    @FXML TableView jbTbl;
+    @FXML TableColumn<JBInfo, Boolean> jbActiveCol;
+    @FXML TableColumn<JBInfo, String> jbFromCol;
+    @FXML TableColumn<JBInfo, String> jbToCol;
+    @FXML TableColumn<JBInfo, String> jbAllianceCol;
+    @FXML TableColumn<JBInfo, Boolean> jbCynoCol;
+    @FXML TableColumn<JBInfo, Boolean> jbJammCol;
+    
+    @FXML Button jbAddBtn;
+    @FXML Button jbImportBtn;
+    @FXML Button jbDelAllBtn;
+    
     /**
      * Initializes the controller class.
      */
@@ -86,6 +104,13 @@ public class SettingsPanelController implements Initializable {
         
         standUpdater.initModality(Modality.APPLICATION_MODAL);
         standUpdater.initStyle(StageStyle.UTILITY);
+        
+        jbActiveCol.setCellFactory(new PropertyValueFactory("isActive"));
+        jbFromCol.setCellFactory(new PropertyValueFactory("from"));
+        jbToCol.setCellFactory(new PropertyValueFactory("to"));
+        jbAllianceCol.setCellFactory(new PropertyValueFactory("shortName"));
+        jbCynoCol.setCellFactory(new PropertyValueFactory("hasCynogen"));
+        jbJammCol.setCellFactory(new PropertyValueFactory("hasCynojammer"));
 
     }    
 }

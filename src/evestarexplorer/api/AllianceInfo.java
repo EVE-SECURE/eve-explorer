@@ -8,8 +8,6 @@ import com.beimin.eveapi.eve.alliancelist.ApiAlliance;
 import evestarexplorer.StarInfoList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleIntegerProperty;
