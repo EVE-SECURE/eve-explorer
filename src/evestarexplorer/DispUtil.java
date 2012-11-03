@@ -49,4 +49,35 @@ public class DispUtil {
         return res;
     }
     
+    
+    
+    /**
+     * 149 597 870 700 - 1AU
+     * 149 597 870 - 149M km
+     * 149597 - 149K km
+     * 149 - 149 km
+     * @param dist дистанция в метрах
+     * @return читабельное значение
+     */
+    public static String dist2HumanReadeable(double dist) {
+        
+        long v = Math.round(dist / Const.AU);
+        if (v >= 1) {
+            return "" + v + "AU";
+        } 
+        
+        v = Math.round(dist / 1000000000 );
+        if (v >= 1) {
+            return "" + v + "M km";
+        }
+        
+        v = Math.round(dist / 1000000 );
+        if (v >= 1) {
+            return "" + v + "K km";
+        }
+        
+        v = Math.round(dist / 1000 );
+        return "" + v + " km";
+    }
+    
 }

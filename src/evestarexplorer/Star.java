@@ -71,15 +71,25 @@ class Star extends Rectangle {
         setTranslateY(info.y);
         setTranslateZ(0);
         
-        setOnMousePressed(new EventHandler<MouseEvent>() {
+
+        setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent me) {
-                System.out.println(info.region + " > " + info.name);
-                System.out.println("star: " + info.x + ", " + info.y);
-                System.out.println("scene: " + me.getSceneX() + ", " + me.getSceneY());
-                System.out.println("screen: " + me.getScreenX() + ", " + me.getScreenY());
                 
-                world.getCPanel().gateStarClicked(info);
+                if (!me.isStillSincePress()) { return; }
+                
+                if (me.isControlDown()) {
+                    EveStarExplorer.ssysObjPanel.setupSystem(info);
+                    EveStarExplorer.ssysPanelStage.show();
+                }
+                else {
+                    System.out.println(info.region + " > " + info.name);
+                    System.out.println("star: " + info.x + ", " + info.y);
+                    System.out.println("scene: " + me.getSceneX() + ", " + me.getSceneY());
+                    System.out.println("screen: " + me.getScreenX() + ", " + me.getScreenY());
+
+                    world.getCPanel().gateStarClicked(info);
+                }
             }
         });
         setOnMouseEntered(new EventHandler<MouseEvent>() {

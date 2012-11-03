@@ -8,6 +8,7 @@ import evestarexplorer.gui.AlliStandLoaderController;
 import evestarexplorer.gui.ControlPanelController;
 import evestarexplorer.gui.GeometryPersistentStage;
 import evestarexplorer.gui.LoadingSplashController;
+import evestarexplorer.gui.SSystemObjectsController;
 import evestarexplorer.gui.SettingsPanelController;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,8 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -61,9 +60,12 @@ public class EveStarExplorer extends Application {
     static public ControlPanelController ctrlPanel;
     static public SettingsPanelController setPanel;
     static public AlliStandLoaderController standLoaderPanel;
+    static public SSystemObjectsController ssysObjPanel;
+    
     static Stage primaryStage;
     static Stage ctrlPanelStage;
     static Stage setPanelStage;
+    static Stage ssysPanelStage;
     
     
     public static World world;
@@ -189,17 +191,22 @@ public class EveStarExplorer extends Application {
             Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return stage;
-//        
-//        
-//        final Stage stage = new Stage();
-//        try {
-//            Parent settingsPane = FXMLLoader.load(getClass().getResource("gui/SettingsPanel.fxml"));
-//            Scene scene = new Scene(settingsPane);
-//            stage.setScene(scene);
-//        } catch (IOException ex) {
-//            Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return stage;
+    
+    }
+    
+    private Stage initSSysPanel() {
+        
+        GeometryPersistentStage stage = null;
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("gui/SSystemObjects.fxml"));
+            Scene scene = new Scene(root);
+            stage = new GeometryPersistentStage(ssysObjPanel);
+            stage.setMonitoredScene(scene);
+        } catch (IOException ex) {
+            Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return stage;
+
     }
         
     void initMainPanel(Stage stage) {
@@ -438,6 +445,9 @@ public class EveStarExplorer extends Application {
         
         setPanelStage = initSettingPanel();
         setPanelStage.initOwner(primaryStage);
+        
+        ssysPanelStage = initSSysPanel();
+        ssysPanelStage.initOwner(primaryStage);
         
         initMainPanel(primaryStage);
 

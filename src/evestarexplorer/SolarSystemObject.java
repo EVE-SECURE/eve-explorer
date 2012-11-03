@@ -26,6 +26,7 @@ public class SolarSystemObject {
         
     }
     
+    public final long id;
     public final long systemId;
     public final Type type;
     public final String name;
@@ -71,7 +72,8 @@ public class SolarSystemObject {
         String[] data = s.split("\\t");
         assert data.length == 7;
         
-        systemId = Long.parseLong(data[0]);
+        id = Long.parseLong(data[0]);
+        systemId = Long.parseLong(data[1]);
         type = Type.getType(data[2]);
         assert type != Type.NONE;
 

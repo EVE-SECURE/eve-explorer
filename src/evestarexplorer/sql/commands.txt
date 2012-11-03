@@ -34,8 +34,8 @@ BEGIN
 END
 
 SELECT 
+    m.itemId,
     s.solarSystemID,
-    s.solarSystemName, 
     i.groupName,
     m.itemName, 
     m.x, m.y, m.z 

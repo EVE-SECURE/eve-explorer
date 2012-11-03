@@ -17,11 +17,13 @@ public class JBInfo {
     
     private final StarInfo fromSystem;
     private final StarInfo toSystem;
-    
+    private String id;
+
     private SolarSystemObject fromObj;
     private SolarSystemObject toObj;
     
     private SimpleBooleanProperty isActive;
+    private SimpleBooleanProperty isValid;
     private SimpleStringProperty from;
     private SimpleStringProperty to;
     private SimpleStringProperty shortName;
@@ -29,6 +31,7 @@ public class JBInfo {
     private SimpleBooleanProperty hasCynojammer;
     
     public BooleanProperty isActiveProperty() { return isActive; }
+    public BooleanProperty isValidProperty() { return isValid; }
     public StringProperty fromProperty() { return from; }
     public StringProperty toProperty() { return to; }
     public StringProperty shortNameProperty() { return shortName; }
@@ -44,10 +47,12 @@ public class JBInfo {
         SovInfo sTo = toSystem.getSovInfo();
         
         String s;
+        boolean valid = false;
         if (sFrom.isClaimable() && sTo.isClaimable()) {
             if (sFrom.isClaimed() && sTo.isClaimed()) {
                 if (sFrom.getOwnerID() == sTo.getOwnerID()) {
-                    s = sFrom.getOwnerShort();
+                    s = "[" + sFrom.getOwnerShort() + "]";
+                    valid = true;
                 }
                 else {
                     // разные альянсы владеют системами
@@ -55,28 +60,79 @@ public class JBInfo {
                 }
             }
             else {
-                s = sFrom.getOwnerShort() + "--";
+                s = (sFrom.isClaimed() ? sFrom.getOwnerShort() : (sTo.isClaimed() ? sTo.getOwnerShort() : "")) + "--";
             }
         }
         else {
             s = "-N/A-";
         }
+        isValid.set(valid);
         shortName.set(s);
     }
-
-    public JBInfo(StarInfo from, StarInfo to) {
-        
-        if (from.compareBySov(to) >= 0) {
-            fromSystem = from;
-            toSystem = to;
+    
+    public String getId() {
+        return id;
+    }
+    public String serialize() {
+        return "" + fromSystem.id
+                + "\t" + toSystem.id
+                + "\t" + (fromObj != null ? fromObj.id : -1)
+                + "\t" + (toObj != null ? toObj.id : -1)
+                + "\t" + (isActive.get() ? 1 : 0)
+                + "\t" + (hasCynogen.get() ? 1: 0)
+                + "\t" + (hasCynojammer.get() ? 1: 0)
+                ;
+    }
+    
+    private void calculateId() {
+        if (toObj.id > fromObj.id) {
+            id = "" + toObj.id + "_" + fromObj.id;
         }
         else {
-            fromSystem = to;
-            toSystem = from;
+            id = "" + fromObj.id + "_" + toObj.id;
         }
+    }
+    
+    public JBInfo(String serial) throws Exception {
+        
+        String[] data = serial.split("\t");
+        if (data.length != 7) { throw new Exception("Invalid string");}
+        
+        long val;
+        val = Long.parseLong(data[0]);
+        fromSystem = EveStarExplorer.world.starsIndexById.get(val);
+        if (fromSystem == null) { throw new Exception("Invalid string");}
+
+        val = Long.parseLong(data[1]);
+        toSystem = EveStarExplorer.world.starsIndexById.get(val);
+        if (toSystem == null) { throw new Exception("Invalid string");}
+        
+        // Это нормально получить тут null
+        val = Long.parseLong(data[2]);
+        fromObj = EveStarExplorer.world.solarObjIndex.get(val);
+
+        val = Long.parseLong(data[3]);
+        toObj = EveStarExplorer.world.solarObjIndex.get(val);
+        
+        val = Long.parseLong(data[4]);
+        isActive.set(val == 1);
+
+        val = Long.parseLong(data[5]);
+        hasCynogen.set(val == 1);
+
+        val = Long.parseLong(data[56]);
+        hasCynojammer.set(val == 1);
+        
+        calculateId();
+    }
+    
+    public JBInfo(StarInfo from, StarInfo to) {
+        
+        fromSystem = from;
+        toSystem = to;
+        calculateId();
         
         updateProps();
     }
-    
     
 }

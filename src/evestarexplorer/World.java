@@ -44,6 +44,7 @@ public class World {
     Map<String, StarInfo> starsIndexByName = new HashMap<>();
     Map<Long, StarInfo> starsIndexById = new HashMap<>();
     Map<String, LaneInfo> lanesIndex = new HashMap<>();
+    Map<Long, SolarSystemObject> solarObjIndex = new HashMap<>();
     
     double minX = Double.MAX_VALUE;
     double minY = Double.MAX_VALUE;
@@ -443,6 +444,7 @@ public class World {
     
     public void addSolarObject(String s) {
         SolarSystemObject so = new SolarSystemObject(s);
+        solarObjIndex.put(so.id, so);
         
         StarInfo si = starsIndexById.get(so.systemId);
         // мы могли найти систему Джовов, пропускаем ее
