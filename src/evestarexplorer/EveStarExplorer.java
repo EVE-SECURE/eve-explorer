@@ -413,8 +413,10 @@ public class EveStarExplorer extends Application {
                         
                         rootCam.getChildren().add(g);
                         ctrlPanel.setStarField(rootCam);
+                        ctrlPanel.setupStarsList(world.starsIndexById.values());
                         
                         resetCamera(primaryStage);
+                        
                         setPanelStage.show();
                         ctrlPanelStage.show();
                     }
@@ -456,7 +458,6 @@ public class EveStarExplorer extends Application {
         
         populateWorld();
         
-    
     }
 
     /**

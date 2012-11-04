@@ -26,7 +26,6 @@ public class PathHighlighter extends Group {
     private PathTransition pathTrn;
     private Path path = new Path();
     private Circle marker;
-    private Group root = null;
     
     class PMoveTo extends MoveTo {
 

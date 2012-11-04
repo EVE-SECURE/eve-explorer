@@ -17,31 +17,36 @@ import javafx.scene.shape.StrokeType;
 class Star extends Rectangle {
     final StarInfo info;
     final World world;
-    boolean selected = false;
+    private long selectCounter = 0;
+    private boolean selected = false;
+    private final double STAR_SIZE = 5;
     
     private void repaintMe() {
         
         Color color = DispUtil.ssColor(info.ss);
-        if (selected) {
+        setFill(color);
+        
+        if (selectCounter != 0) {
+            if (selected) { return; }
+            selected = true;
             setStroke(Color.BLACK);
-            setStrokeWidth(0.5);
+            setStrokeType(StrokeType.OUTSIDE);
+            setStrokeWidth(1.0);
         }
         else {
+            if (!selected) { return; }
+            selected = false;
             setStroke(Color.TRANSPARENT);
             setStrokeWidth(0);
         }
-        
-        setFill(color);
     }
     
     void setSelected(boolean sel) {
-        if (selected != sel) {
-            selected = sel;
-            repaintMe();
-            
-            for (StarInfo si : info.getNeigbors()) {
-                world.worldLanes.get(LaneInfo.getKey(si.name, this.info.name)).setSelected(sel);
-            }
+        
+        selectCounter += sel ? +1 : -1;
+        repaintMe();
+        for (StarInfo si : info.getNeigbors()) {
+            world.worldLanes.get(LaneInfo.getKey(si.name, this.info.name)).setSelected(sel);
         }
     }
 
@@ -51,7 +56,7 @@ class Star extends Rectangle {
         this.world = world;
         info = si;
         
-        double size = 5;
+        double size = STAR_SIZE;
         
         setHeight(size);
         setWidth(size);

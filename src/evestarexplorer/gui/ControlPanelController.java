@@ -5,6 +5,7 @@
 package evestarexplorer.gui;
 
 import com.beimin.eveapi.core.ApiException;
+import com.mytdev.javafx.scene.control.AutoCompleteTextField;
 import evestarexplorer.ApiInfoLoader;
 import evestarexplorer.DispUtil;
 import evestarexplorer.EveStarExplorer;
@@ -12,12 +13,15 @@ import evestarexplorer.StarExplorerEvent;
 import evestarexplorer.StarInfo;
 import evestarexplorer.Valid;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -52,13 +56,15 @@ public class ControlPanelController implements Initializable {
     @FXML public Label infoSS;
     
     @FXML public Label infoSovOwner;
+    
+    @FXML public AutoCompleteTextField<String> systemFind;
 
     @FXML public Button apiLoad;
     @FXML public Label apiSovereignityStatus;
     @FXML public Label apiAllianceListStatus;
     
-    @FXML public TextField gateFrom;
-    @FXML public TextField gateDest;
+    @FXML public AutoCompleteTextField<String> gateFrom;
+    @FXML public AutoCompleteTextField<String> gateDest;
     @FXML public Button gateStart;
     
     @FXML public CheckBox gateHS_prefs;
@@ -74,6 +80,27 @@ public class ControlPanelController implements Initializable {
     @FXML public ToggleButton gateFindFrom;
     @FXML public ToggleButton gateFindDest;
     
+
+    @FXML protected void systemFindAction() {
+        System.out.println("systemFind: " + systemFind.getText());
+//        if (starList.contains("Jita")) { System.out.println("Jita exists!");}
+    }
+
+    
+    private ObservableList<String> starList;
+    public void setupStarsList(Collection<StarInfo> list) {
+        
+        starList = FXCollections.observableArrayList();
+        
+        for (StarInfo si : list) {
+            starList.add(si.name);
+        }
+        
+        gateFrom.setItems(starList);
+        gateDest.setItems(starList);
+        systemFind.setItems(starList);
+        
+    }
     
     private void showApiStatus(final Label l, final ApiException ex, final Date at) {
         

@@ -4,6 +4,7 @@
  */
 package evestarexplorer;
 
+import com.mytdev.javafx.scene.control.AutoCompleteTextField;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -29,7 +30,7 @@ public class DispUtil {
         return clr;
     }
     
-    public static Valid starNameInputValidate(TextField t) {
+    public static Valid starNameInputValidate(AutoCompleteTextField t) {
         
         String name = t.getText();
         Valid res = EveStarExplorer.world.isStarValid(name);
