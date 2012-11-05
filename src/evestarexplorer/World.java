@@ -140,11 +140,15 @@ public class World {
         return worldStars.size();
     }
     
-    final Collection<Star> getStars() {
+    Collection<Star> getStars() {
         return worldStars.values();
     }
+    
+    Collection<StarInfo> getStarInfos() {
+        return starsIndexById.values();
+    }
 
-    final Collection<Lane> getLanes() {
+    Collection<Lane> getLanes() {
         return worldLanes.values();
     }
     

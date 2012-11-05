@@ -40,10 +40,10 @@ import javafx.stage.StageStyle;
  * @author gyv
  */
 public class EveStarExplorer extends Application {
-    
+
     //Cam ctrlCam = new Cam();
-    Cam rootCam = new Cam();
-    
+    static Cam rootCam = new Cam();
+
     double mousePosX;
     double mousePosY;
     double mouseOldX;
@@ -51,10 +51,10 @@ public class EveStarExplorer extends Application {
     double mouseDeltaX;
     double mouseDeltaY;
     
-    double scale = 1;
-    double scaleMin = 1;
-    double scaleMax = 10;
-    double scaleStep = 1.2;
+    static double scale = 1;
+    static double scaleMin = 1;
+    final static double SCALE_MAX = 10;
+    final static double SCALE_STEP = 1.2;
     
     static public LoadingSplashController splashPanel;
     static public ControlPanelController ctrlPanel;
@@ -62,27 +62,27 @@ public class EveStarExplorer extends Application {
     static public AlliStandLoaderController standLoaderPanel;
     static public SSystemObjectsController ssysObjPanel;
     
-    static Stage primaryStage;
-    static Stage ctrlPanelStage;
-    static Stage setPanelStage;
-    static Stage ssysPanelStage;
+    static public Stage primaryStage;
+    static public Stage ctrlPanelStage;
+    static public Stage setPanelStage;
+    static public Stage ssysPanelStage;
     
     
     public static World world;
 
-    double getWorldX (double sceneX) {
+    static double getWorldX (double sceneX) {
         return (sceneX - rootCam.x) / scale;
     }
     
-    double getWorldY (double sceneY) {
+    static double getWorldY (double sceneY) {
         return (sceneY - rootCam.y) / scale;
     }
     
-    double getSceneX (double worldX) {
+    static double getSceneX (double worldX) {
         return worldX * scale + rootCam.x;
     }
     
-    double getSceneY (double worldY) {
+    static double getSceneY (double worldY) {
         return worldY * scale + rootCam.y;
     }
     
@@ -108,7 +108,7 @@ public class EveStarExplorer extends Application {
         rootCam.setCamPos(x, y);
     }
     
-    class Cam extends Group {
+    static class Cam extends Group {
         Translate t  = new Translate();
         Translate p  = new Translate();
         Translate ip = new Translate();
@@ -150,6 +150,34 @@ public class EveStarExplorer extends Application {
             
         }
 
+    }
+    
+    public static void setAsCurrent(String name) {
+        
+        Star star = world.findStar(name);
+        if (star == null) { return; }
+        
+        star.setAsCurrent();
+        
+    }
+    
+    static void centerAtStar(Star star) {
+        if (star == null) { return; }
+        
+        double centerX = primaryStage.getScene().getWidth()/2;
+        double centerY = primaryStage.getScene().getHeight()/2;
+        
+        double x = getSceneX(star.info.x);
+        double y = getSceneY(star.info.y);
+        
+        double dX = centerX - x;
+        double dY = centerY - y;
+        
+        rootCam.moveCamPos(dX, dY);
+    }
+    
+    public static void centerAtStar(String starName) {
+        centerAtStar(world.findStar(starName));
     }
     
     private Stage initSplashPanel() {
@@ -229,16 +257,16 @@ public class EveStarExplorer extends Application {
                 double newScale = scale;
                 
                 if (se.getDeltaY() > 0) { 
-                    newScale = newScale * scaleStep; 
+                    newScale = newScale * SCALE_STEP; 
                 }
                 else if (se.getDeltaY() < 0) {
-                    newScale = newScale / scaleStep; 
+                    newScale = newScale / SCALE_STEP; 
                 }
                 else {
                     return;
                 }
                 
-                if (newScale <= scaleMax && newScale >= scaleMin) {
+                if (newScale <= SCALE_MAX && newScale >= scaleMin) {
                     
                     double sceneX = se.getSceneX();
                     double sceneY = se.getSceneY();
@@ -264,7 +292,8 @@ public class EveStarExplorer extends Application {
 
             @Override
             public void handle(MouseEvent event) {
-                if(event.getButton().equals(MouseButton.PRIMARY) && (event.getClickCount() == 2))
+                if(event.getButton().equals(MouseButton.PRIMARY) 
+                   && (event.getClickCount() == 2))
                 {
                     ctrlPanelStage.show();
                     ctrlPanelStage.setIconified(false);
@@ -413,11 +442,11 @@ public class EveStarExplorer extends Application {
                         
                         rootCam.getChildren().add(g);
                         ctrlPanel.setStarField(rootCam);
-                        ctrlPanel.setupStarsList(world.starsIndexById.values());
+                        ctrlPanel.setupStarsList(world.getStarInfos());
                         
                         resetCamera(primaryStage);
                         
-                        setPanelStage.show();
+                        //setPanelStage.show();
                         ctrlPanelStage.show();
                     }
                 });

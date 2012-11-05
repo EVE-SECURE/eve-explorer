@@ -54,6 +54,7 @@ public class SSystemObjectsController implements Initializable {
     private final ObservableList<SolarObject> data = FXCollections.observableArrayList();
     
     public void setupSystem(StarInfo si) {
+        
         SolarObject sun = null;
         data.clear();
         for (SolarSystemObject sso : si.getStarObjects()) {

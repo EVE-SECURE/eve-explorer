@@ -29,7 +29,6 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -82,8 +81,11 @@ public class ControlPanelController implements Initializable {
     
 
     @FXML protected void systemFindAction() {
-        System.out.println("systemFind: " + systemFind.getText());
-//        if (starList.contains("Jita")) { System.out.println("Jita exists!");}
+        String name = systemFind.getText();
+        if (starList.contains(name)) {
+            EveStarExplorer.centerAtStar(name);
+            EveStarExplorer.setAsCurrent(name);
+        }
     }
 
     

@@ -19,15 +19,16 @@ import javafx.scene.shape.Line;
 class Lane extends Line {
     final LaneInfo info;
     
-    private boolean selected = false;
+    private boolean selected = true;
+    private long selectCounter = 0;
     
     void setSelected(boolean sel) {
-        if (selected != sel) {
+        
+        selectCounter += sel ? +1 : -1;
+        assert selectCounter >= 0;
+        
+        repaintMe();
             
-            selected = sel;
-            repaintMe();
-            
-        }
     }
 
     Lane(LaneInfo li) {
@@ -76,7 +77,10 @@ class Lane extends Line {
         
     private void repaintMe() {
         
-        if (selected) {
+        if (selectCounter > 0) {
+            
+            if (selected) { return; }
+            selected = true;
             
             List<Stop> stops = new ArrayList<>();
             
@@ -100,6 +104,9 @@ class Lane extends Line {
             
         }
         else {
+            
+            if (!selected) { return; }
+            selected = false;
             
             Color color = new Color(0, 0, 0, 0.5);
             setStroke(color);

@@ -14,12 +14,16 @@ import javafx.scene.shape.StrokeType;
  *
  * @author g_yaltchik
  */
-class Star extends Rectangle {
+public class Star extends Rectangle {
+
     final StarInfo info;
-    final World world;
+    
+    static private Star currentStar = null;
+    
     private long selectCounter = 0;
     private boolean selected = false;
     private final double STAR_SIZE = 5;
+    final World world;
     
     private void repaintMe() {
         
@@ -41,13 +45,25 @@ class Star extends Rectangle {
         }
     }
     
-    void setSelected(boolean sel) {
+    void setSelection(boolean sel) {
         
         selectCounter += sel ? +1 : -1;
         repaintMe();
         for (StarInfo si : info.getNeigbors()) {
             world.worldLanes.get(LaneInfo.getKey(si.name, this.info.name)).setSelected(sel);
         }
+        
+    }
+    
+    void setAsCurrent() {
+        
+        if (currentStar == this) { return; }
+        if (currentStar != null) {
+            currentStar.setSelection(false);
+        }
+
+        currentStar = this;
+        setSelection(true);
     }
 
     Star(StarInfo si, final World world) {
@@ -77,23 +93,32 @@ class Star extends Rectangle {
         setTranslateZ(0);
         
 
+        final Star self = this;
         setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent me) {
                 
                 if (!me.isStillSincePress()) { return; }
                 
+                if (me.getClickCount() == 2) {
+                    EveStarExplorer.centerAtStar(self);
+                    return;
+                }
+                
                 if (me.isControlDown()) {
                     EveStarExplorer.ssysObjPanel.setupSystem(info);
+                    EveStarExplorer.ssysPanelStage.setTitle(info.name + " (" + info.region + ")");
                     EveStarExplorer.ssysPanelStage.show();
                 }
                 else {
-                    System.out.println(info.region + " > " + info.name);
-                    System.out.println("star: " + info.x + ", " + info.y);
-                    System.out.println("scene: " + me.getSceneX() + ", " + me.getSceneY());
-                    System.out.println("screen: " + me.getScreenX() + ", " + me.getScreenY());
+//                    System.out.println(info.region + " > " + info.name);
+//                    System.out.println("star: " + info.x + ", " + info.y);
+//                    System.out.println("scene: " + me.getSceneX() + ", " + me.getSceneY());
+//                    System.out.println("screen: " + me.getScreenX() + ", " + me.getScreenY());
+//                    System.out.println("cam: " + EveStarExplorer.rootCam.x + ", " + EveStarExplorer.rootCam.y);
 
                     world.getCPanel().gateStarClicked(info);
+                    self.setAsCurrent();
                 }
             }
         });
@@ -105,13 +130,13 @@ class Star extends Rectangle {
                 world.getCPanel().infoRegion.setText(info.region);
                 DispUtil.SStatus(world.getCPanel().infoSS, info.ss);
                 world.getCPanel().infoSovOwner.setText(info.getSovInfo().getOwnerName());
-                setSelected(true);
+                setSelection(true);
             }
         });
         setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent me) {
-                setSelected(false);
+                setSelection(false);
             }
         });
     }
