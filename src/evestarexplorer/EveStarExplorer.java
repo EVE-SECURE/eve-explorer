@@ -55,6 +55,8 @@ public class EveStarExplorer extends Application {
     static double scaleMin = 1;
     final static double SCALE_MAX = 10;
     final static double SCALE_STEP = 1.2;
+
+    private final static double SHOW_STAR_NAMES_SCALE = 0.9;
     
     static public LoadingSplashController splashPanel;
     static public ControlPanelController ctrlPanel;
@@ -247,6 +249,17 @@ public class EveStarExplorer extends Application {
         
         setHandlers(stage.getScene());
     }
+    
+    private void updateStarNamesDisplayStatus() {
+
+        boolean showStatus = scale > SHOW_STAR_NAMES_SCALE;
+        if (showStatus != Star.getAlwaysShowText()) {
+            Star.setAlwaysShowText(showStatus);
+            for (Star s : world.worldStars.values()) {
+                s.repaintText();
+            }
+        }
+    }
 
     void setHandlers(final Scene s) {
         
@@ -275,7 +288,10 @@ public class EveStarExplorer extends Application {
                     double worldY = getWorldY(sceneY);
                     
                     scale = newScale;
+                    updateStarNamesDisplayStatus();
+                    
                     world.setScale(scale);
+                    System.out.println("scale: " + scale);
                     
                     double newSceneX = getSceneX(worldX);
                     double newSceneY = getSceneY(worldY);

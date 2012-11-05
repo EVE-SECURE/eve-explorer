@@ -374,17 +374,17 @@ public class World {
             
             String nClass = n.getClass().getName();
             
-            if (nClass.compareTo(Group.class.getName()) == 0) {
+            if (nClass.compareTo(Star.class.getName()) == 0) {
+                Star s = (Star) n;
+                s.setTranslateX((s.info.x) * scale);
+                s.setTranslateY((s.info.y) * scale);
+            }
+            else if (nClass.compareTo(Group.class.getName()) == 0) {
                 doSetScale((Group) n, scale);
             }
             else if (nClass.compareTo(PathHighlighter.class.getName()) == 0) {
                 PathHighlighter p = (PathHighlighter) n;
                 doSetScale(p, scale);
-            }
-            else if (nClass.compareTo(Star.class.getName()) == 0) {
-                Star s = (Star) n;
-                s.setTranslateX((s.info.x) * scale);
-                s.setTranslateY((s.info.y) * scale);
             }
             else if (nClass.compareTo(Lane.class.getName()) == 0) {
                 Lane l = (Lane) n;

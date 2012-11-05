@@ -5,43 +5,68 @@
 package evestarexplorer;
 
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 /**
  *
  * @author g_yaltchik
  */
-public class Star extends Rectangle {
+public class Star extends Group {
 
     final StarInfo info;
     
     static private Star currentStar = null;
-    
+    static private boolean alwaysShowText = false;
+
     private long selectCounter = 0;
     private boolean selected = false;
     private final double STAR_SIZE = 5;
     final World world;
     
+    private final Rectangle body = new Rectangle();
+    private final Text text = new Text();
+    
+    public static void setAlwaysShowText(boolean alwaysShowText) {
+        Star.alwaysShowText = alwaysShowText;
+    }
+    
+    public static boolean getAlwaysShowText() {
+        return Star.alwaysShowText;
+    }
+    
+    public void repaintText() {
+        text.setVisible(selected || alwaysShowText);
+        text.setFill(selected ? Color.BLACK : Color.GRAY);
+        text.toFront();
+    }
+    
     private void repaintMe() {
         
         Color color = DispUtil.ssColor(info.ss);
-        setFill(color);
+        body.setFill(color);
         
         if (selectCounter != 0) {
             if (selected) { return; }
             selected = true;
-            setStroke(Color.BLACK);
-            setStrokeType(StrokeType.OUTSIDE);
-            setStrokeWidth(1.0);
+            body.setStroke(Color.BLACK);
+            body.setStrokeType(StrokeType.OUTSIDE);
+            body.setStrokeWidth(1.0);
+            
+            repaintText();
         }
         else {
             if (!selected) { return; }
             selected = false;
-            setStroke(Color.TRANSPARENT);
-            setStrokeWidth(0);
+            body.setStroke(Color.TRANSPARENT);
+            body.setStrokeWidth(0);
+            
+            repaintText();
         }
     }
     
@@ -68,22 +93,22 @@ public class Star extends Rectangle {
 
     Star(StarInfo si, final World world) {
         super();
-        
+
         this.world = world;
         info = si;
         
         double size = STAR_SIZE;
         
-        setHeight(size);
-        setWidth(size);
-        setStrokeType(StrokeType.OUTSIDE);
+        body.setHeight(size);
+        body.setWidth(size);
+        body.setStrokeType(StrokeType.OUTSIDE);
         
         if (info.hasStation() == false) {
-            setArcHeight(size);
-            setArcWidth(size);
+            body.setArcHeight(size);
+            body.setArcWidth(size);
         }
         
-        setSmooth(true);
+        body.setSmooth(true);
         repaintMe();
         
         setLayoutX(-size/2);
@@ -94,7 +119,7 @@ public class Star extends Rectangle {
         
 
         final Star self = this;
-        setOnMouseClicked(new EventHandler<MouseEvent>() {
+        body.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent me) {
                 
@@ -102,6 +127,7 @@ public class Star extends Rectangle {
                 
                 if (me.getClickCount() == 2) {
                     EveStarExplorer.centerAtStar(self);
+                    me.consume();
                     return;
                 }
                 
@@ -122,7 +148,7 @@ public class Star extends Rectangle {
                 }
             }
         });
-        setOnMouseEntered(new EventHandler<MouseEvent>() {
+        body.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent me) {
                 world.getCPanel().infoStarName.setText(info.name);
@@ -133,12 +159,23 @@ public class Star extends Rectangle {
                 setSelection(true);
             }
         });
-        setOnMouseExited(new EventHandler<MouseEvent>() {
+        body.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent me) {
                 setSelection(false);
             }
         });
+
+        text.setText(info.name);
+        text.setFont(new Font(10));
+        text.setFill(Color.GRAY);
+        text.setLayoutX(4);
+        text.setLayoutY(-4);
+        text.setVisible(false);
+        text.setMouseTransparent(true);
+        
+        getChildren().addAll(body, text);
+        
     }
 
     void addGate(StarInfo si) {
