@@ -10,6 +10,7 @@ import evestarexplorer.gui.GeometryPersistentStage;
 import evestarexplorer.gui.LoadingSplashController;
 import evestarexplorer.gui.SSystemObjectsController;
 import evestarexplorer.gui.SettingsPanelController;
+import evestarexplorer.gui.SolarMapController;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,13 +25,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -41,8 +40,8 @@ import javafx.stage.StageStyle;
  */
 public class EveStarExplorer extends Application {
 
-    //Cam ctrlCam = new Cam();
-    static Cam rootCam = new Cam();
+    //Cam ctrlCam = new Camera();
+    static Camera rootCam = new Camera();
 
     double mousePosX;
     double mousePosY;
@@ -63,11 +62,13 @@ public class EveStarExplorer extends Application {
     static public SettingsPanelController setPanel;
     static public AlliStandLoaderController standLoaderPanel;
     static public SSystemObjectsController ssysObjPanel;
+    static public SolarMapController solarMapPanel;
     
     static public Stage primaryStage;
     static public Stage ctrlPanelStage;
     static public Stage setPanelStage;
     static public Stage ssysPanelStage;
+    static public Stage solarMapStage;
     
     
     public static World world;
@@ -108,50 +109,6 @@ public class EveStarExplorer extends Application {
         y += h / 2;
         
         rootCam.setCamPos(x, y);
-    }
-    
-    static class Cam extends Group {
-        Translate t  = new Translate();
-        Translate p  = new Translate();
-        Translate ip = new Translate();
-        Rotate rx = new Rotate();
-        Rotate ry = new Rotate();
-        Rotate rz = new Rotate();
-        Scale s = new Scale();
-        
-        double x = 0;
-        double y = 0;
-
-        { 
-            rx.setAxis(Rotate.X_AXIS);
-            ry.setAxis(Rotate.Y_AXIS);
-            rz.setAxis(Rotate.Z_AXIS); 
-        }
-        
-        public Cam() { 
-            super(); 
-            getTransforms().addAll(t, p, rx, rz, ry, s, ip); 
-        }
-
-        void setCamPos(double posX, double posY) {
-            
-            x = posX;
-            y = posY;
-            
-            setTranslateX(posX);
-            setTranslateY(posY);
-
-            ctrlPanel.dbgMouseX.setText(Double.toString(posX));
-            ctrlPanel.dbgMouseY.setText(Double.toString(posY));
-            
-        }
-
-        private void moveCamPos(double deltaX, double deltaY) {
-            
-            setCamPos(x + deltaX, y + deltaY);
-            
-        }
-
     }
     
     public static void setAsCurrent(String name) {
@@ -239,6 +196,21 @@ public class EveStarExplorer extends Application {
 
     }
         
+    private Stage initSolarMap() {
+
+        GeometryPersistentStage stage = null;
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("gui/SolarMap.fxml"));
+            Scene scene = new Scene(root, 300, 300, true);
+            stage = new GeometryPersistentStage(solarMapPanel);
+            scene.setCamera(new PerspectiveCamera());
+            stage.setMonitoredScene(scene);
+        } catch (IOException ex) {
+            Logger.getLogger(EveStarExplorer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return stage;
+    }
+    
     void initMainPanel(Stage stage) {
         
         world = new World(rootCam, ctrlPanel, setPanel);
@@ -291,7 +263,6 @@ public class EveStarExplorer extends Application {
                     updateStarNamesDisplayStatus();
                     
                     world.setScale(scale);
-                    System.out.println("scale: " + scale);
                     
                     double newSceneX = getSceneX(worldX);
                     double newSceneY = getSceneY(worldY);
@@ -495,6 +466,9 @@ public class EveStarExplorer extends Application {
         
         ssysPanelStage = initSSysPanel();
         ssysPanelStage.initOwner(primaryStage);
+        
+        solarMapStage = initSolarMap();
+        solarMapStage.initOwner(primaryStage);
         
         initMainPanel(primaryStage);
 

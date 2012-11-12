@@ -26,7 +26,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -44,13 +43,6 @@ public class SSystemObjectsController implements Initializable {
     @FXML TableColumn<SolarObject, Double> distCol;
     @FXML TableColumn<SolarObject, String> nameCol;
     
-    final static Image sunIcon = new Image(ControlPanelController.class.getResourceAsStream("/evestarexplorer/images/sun_16x16.png"));
-    final static Image planetIcon = new Image(ControlPanelController.class.getResourceAsStream("/evestarexplorer/images/planet_16x16.png"));
-    final static Image moonIcon = new Image(ControlPanelController.class.getResourceAsStream("/evestarexplorer/images/moon_16x16.png"));
-    final static Image beltIcon = new Image(ControlPanelController.class.getResourceAsStream("/evestarexplorer/images/belt_16x16.png"));
-    final static Image gateIcon = new Image(ControlPanelController.class.getResourceAsStream("/evestarexplorer/images/gate_16x16.png"));
-    final static Image stationIcon = new Image(ControlPanelController.class.getResourceAsStream("/evestarexplorer/images/station_16x16.png"));
-        
     private final ObservableList<SolarObject> data = FXCollections.observableArrayList();
     
     public void setupSystem(StarInfo si) {
@@ -183,12 +175,12 @@ public class SSystemObjectsController implements Initializable {
                 SolarObject so = data.get(getIndex());
                 if (so != null) {
                     switch (so.so.type) {
-                        case BELT: setGraphic(new ImageView(beltIcon)); break;
-                        case GATE: setGraphic(new ImageView(gateIcon)); break;
-                        case MOON: setGraphic(new ImageView(moonIcon)); break;
-                        case PLANET: setGraphic(new ImageView(planetIcon)); break;
-                        case STATION: setGraphic(new ImageView(stationIcon)); break;
-                        case SUN: setGraphic(new ImageView(sunIcon)); break;
+                        case BELT: setGraphic(new ImageView(Images.beltIcon)); break;
+                        case GATE: setGraphic(new ImageView(Images.gateIcon)); break;
+                        case MOON: setGraphic(new ImageView(Images.moonIcon)); break;
+                        case PLANET: setGraphic(new ImageView(Images.planetIcon)); break;
+                        case STATION: setGraphic(new ImageView(Images.stationIcon)); break;
+                        case SUN: setGraphic(new ImageView(Images.sunIcon)); break;
                         default:
                             setGraphic(null);
                     }

@@ -16,13 +16,13 @@ import javafx.scene.shape.Line;
  *
  * @author g_yaltchik
  */
-class Lane extends Line {
+public class Lane extends Line {
     final LaneInfo info;
     
     private boolean selected = true;
     private long selectCounter = 0;
     
-    void setSelected(boolean sel) {
+    void highlightLane(boolean sel) {
         
         selectCounter += sel ? +1 : -1;
         assert selectCounter >= 0;
@@ -42,11 +42,11 @@ class Lane extends Line {
         switch (info.type) {
             
             case CONSTELLATION:
-                getStrokeDashArray().addAll(2d,2d);
+                getStrokeDashArray().addAll(10d,2d);
                 break;
                 
             case REGION:
-                getStrokeDashArray().addAll(10d,2d);
+                getStrokeDashArray().addAll(2d,2d);
                 break;
                 
         }

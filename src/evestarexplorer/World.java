@@ -51,7 +51,9 @@ public class World {
     double maxX = Double.MIN_VALUE;
     double maxY = Double.MIN_VALUE;
     
+    @SuppressWarnings("LeakingThisInConstructor")
     World(final Group root, ControlPanelController cp, SettingsPanelController sp) {
+        
         rootScene = root;
         cPanel = cp;
         sPanel = sp;
@@ -67,10 +69,9 @@ public class World {
                 if (ph != null) {
                     ph.stop();
                     rootScene.getChildren().remove(ph);
-                    ph = null;
                 }
                 
-                ph = new PathHighlighter(event.path);
+                ph = new PathHighlighter(World.this, event.path);
                 doSetScale(ph, currentScale);
                 rootScene.getChildren().add(ph);
                 raiseStars();
@@ -191,6 +192,18 @@ public class World {
         for (Star s : worldStars.values()) {
             s.toFront();
         }
+    }
+
+    /**
+     * Ищет lane соединяющий две переданные системы.
+     * @param star1
+     * @param star2
+     * @return Возвращает Lane или null, если эти системы не соседние
+     */
+    public Lane findLane(Star star1, Star star2) {
+        String key = LaneInfo.getKey(star1.info.name, star2.info.name);
+        Lane lane = worldLanes.get(key);
+        return lane;
     }
 
     protected class CompareByDistanceToGoal implements Comparator {
@@ -398,7 +411,7 @@ public class World {
                 l.setEndY(s2.y * scale);
             }
             else {
-                System.out.println("Scale: " + nClass);
+                System.out.println("doSetScale: unknown object '" + nClass + "'");
             }
         }
     }

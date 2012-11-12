@@ -70,12 +70,16 @@ public class Star extends Group {
         }
     }
     
-    void setSelection(boolean sel) {
-        
+    void highlightStar(boolean sel) {
         selectCounter += sel ? +1 : -1;
         repaintMe();
+    }
+    
+    void highlightNeigbors(boolean sel) {
+        
+        highlightStar(sel);
         for (StarInfo si : info.getNeigbors()) {
-            world.worldLanes.get(LaneInfo.getKey(si.name, this.info.name)).setSelected(sel);
+            world.worldLanes.get(LaneInfo.getKey(si.name, this.info.name)).highlightLane(sel);
         }
         
     }
@@ -84,11 +88,11 @@ public class Star extends Group {
         
         if (currentStar == this) { return; }
         if (currentStar != null) {
-            currentStar.setSelection(false);
+            currentStar.highlightNeigbors(false);
         }
 
         currentStar = this;
-        setSelection(true);
+        highlightNeigbors(true);
     }
 
     Star(StarInfo si, final World world) {
@@ -136,6 +140,11 @@ public class Star extends Group {
                     EveStarExplorer.ssysPanelStage.setTitle(info.name + " (" + info.region + ")");
                     EveStarExplorer.ssysPanelStage.show();
                 }
+                else if (me.isAltDown()) {
+                    EveStarExplorer.solarMapPanel.setupMap(info);
+                    EveStarExplorer.solarMapStage.setTitle(info.name + " (" + info.region + ")");
+                    EveStarExplorer.solarMapStage.show();
+                }
                 else {
 //                    System.out.println(info.region + " > " + info.name);
 //                    System.out.println("star: " + info.x + ", " + info.y);
@@ -156,13 +165,13 @@ public class Star extends Group {
                 world.getCPanel().infoRegion.setText(info.region);
                 DispUtil.SStatus(world.getCPanel().infoSS, info.ss);
                 world.getCPanel().infoSovOwner.setText(info.getSovInfo().getOwnerName());
-                setSelection(true);
+                highlightNeigbors(true);
             }
         });
         body.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent me) {
-                setSelection(false);
+                highlightNeigbors(false);
             }
         });
 
