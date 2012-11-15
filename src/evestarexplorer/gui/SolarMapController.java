@@ -17,8 +17,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,6 +29,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.CircleBuilder;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Window;
@@ -41,13 +45,14 @@ public class SolarMapController implements Initializable {
 
     @FXML ToggleButton showMoons;
     @FXML ToggleButton showBelts;
-//    @FXML AnchorPane starFieldPane;
     
-    @FXML Group fieldGroup = new Group();
+    @FXML Group displayGroup;
+    Group fieldGroup = new Group();
+    Group labelGroup = new Group();
     
     private double maxDistance = 0;
     
-    private Map<SolarSystemObject, Node> objects = new HashMap<>();
+    private Map<SolarSystemObject, MapObject> objects = new HashMap<>();
     
     private double mouseX = 0;
     private double mouseY = 0;
@@ -82,7 +87,12 @@ public class SolarMapController implements Initializable {
         return distance;
     }
     
-    class Orbit extends Group {
+    
+    abstract class MapObject extends Group {
+        abstract public void deregister();
+    }
+    
+    class Orbit extends MapObject {
 
         private final Circle orbit;
         double radius = 0;
@@ -119,77 +129,55 @@ public class SolarMapController implements Initializable {
             orbit.radiusProperty().bind(scale.multiply(radius));
             
         }
+
+        @Override
+        public void deregister() {
+            orbit.radiusProperty().unbind();
+        }
         
     }
     
-    class StarBody extends Group {
+    class StarBody extends MapObject {
         
-        private final SolarSystemObject s;
-        private final ImageView image;
+        protected final SolarSystemObject sso;
+        protected final ImageView image;
+        protected final Group imgTrans = new Group();
         
         public StarBody(SolarSystemObject s, Image img) {
             super();
-            this.s = s;
+            this.sso = s;
             
             image = ImageViewBuilder
                     .create()
                     .image(img)
                     .x(0)
                     .y(0)
-//                    .x(this.s.x * scale.doubleValue())
-//                    .y(this.s.z * scale.doubleValue())
                     .layoutX(-Images.planetIcon.getWidth() / 2)
                     .layoutY(-Images.planetIcon.getHeight() / 2)
                     .build();
             
-//            image.xProperty().bind(scale.multiply(this.s.x));
-//            image.yProperty().bind(scale.multiply(this.s.z));
-            
-//            Translate _t = new Translate();
-//            _t.xProperty().bind(scale.multiply(this.s.x));
-//            _t.yProperty().bind(scale.multiply(this.s.z));
-//            _t.zProperty().bind(scale.multiply(this.s.y));
-            
-            Group imgTrans = new Group(image);
-            imgTrans.translateXProperty().bind(scale.multiply(this.s.x));
-            imgTrans.translateYProperty().bind(scale.multiply(this.s.z));
-            imgTrans.translateZProperty().bind(scale.multiply(this.s.y));
-            
-            
-//            Rotate _rx = new Rotate(0, Rotate.X_AXIS);
-//            Rotate _ry = new Rotate(0, Rotate.Y_AXIS);
-//            Rotate _rz = new Rotate(0, Rotate.Z_AXIS);
-//
-//            _rx.angleProperty().bind(rX.angleProperty().multiply(-1.0));
-//            _ry.angleProperty().bind(rY.angleProperty().multiply(-1.0));
-//            _rz.angleProperty().bind(rZ.angleProperty().multiply(-1.0));
-//            
-//            Group iG1 = new Group();
-//            Group iG2 = new Group();
-//            
-//            iG1.getTransforms().add(_t);
-//            iG1.getTransforms().add(_rx);
-//            iG2.getTransforms().add(_ry);
-//            
-//            iG1.getChildren().add(image);
-//            iG2.getChildren().add(iG1);
-            
-            //iG1.getTransforms().addAll(_t, _rz, _ry, _rz);
-            
-//            this.getChildren().add(iG2);
+            imgTrans.getChildren().add(image);
+            imgTrans.translateXProperty().bind(scale.multiply(this.sso.x));
+            imgTrans.translateYProperty().bind(scale.multiply(this.sso.z));
+            imgTrans.translateZProperty().bind(scale.multiply(this.sso.y));
             this.getChildren().add(imgTrans);
+        }
+
+        @Override
+        public void deregister() {
+            imgTrans.translateXProperty().unbind();
+            imgTrans.translateYProperty().unbind();
+            imgTrans.translateZProperty().unbind();
         }
         
     }
     
     class Planet extends StarBody {
 
-        private final SolarSystemObject sso;
         private final Orbit orbit;
 
         public Planet(SolarSystemObject s) {
             super(s, Images.planetIcon);
-            this.sso = s;
             
             orbit = new Orbit(sso);
             this.getChildren().add(orbit);
@@ -214,20 +202,49 @@ public class SolarMapController implements Initializable {
     }
     
     class Gate extends StarBody {
+        
+        private final Text label = new Text();
+        private ChangeListener<Number> rxListener;
 
         public Gate(SolarSystemObject s) {
             super(s, Images.gateIcon);
+            
+            label.setText(s.name);
+            label.setFont(new Font(10));
+            label.setFill(Color.GRAY);
+            
+            labelGroup.getChildren().add(label);
+            
+            rxListener = new ChangeListener<Number>() {
+
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    Point2D xy = image.localToScene(new Point2D(image.getX(), image.getY()));
+                    Point2D lxy = label.sceneToLocal(xy);
+                    label.setX(lxy.getX());
+                    label.setY(lxy.getY());
+                }
+            };
+            
+            rX.angleProperty().addListener(rxListener);
+            
+        }
+
+        @Override
+        public void deregister() {
+            super.deregister();
+            rX.angleProperty().removeListener(rxListener);
         }
         
     }
     
     private void updateScale() {
-        double sceneSize = Math.min(fieldGroup.getScene().getWidth(), fieldGroup.getScene().getHeight());
-        scale.set( sceneSize / (2 * maxDistance) );
-        System.out.println("new scale:" + scale);
+        double sceneSize = Math.min(fieldGroup.getScene().getWindow().getWidth(), 
+                                    fieldGroup.getScene().getWindow().getHeight());
+        scale.set( sceneSize * 0.9 / (2 * maxDistance) );
     }
 
-    private Node createObject(SolarSystemObject s) {
+    private MapObject createObject(SolarSystemObject s) {
     
         switch (s.type) {
             case SUN: return new Sun(s);
@@ -245,6 +262,11 @@ public class SolarMapController implements Initializable {
     public void setupMap(StarInfo si) {
         
         fieldGroup.getChildren().clear();
+        labelGroup.getChildren().clear();
+        
+        for (MapObject o : objects.values()) {
+            o.deregister();
+        }
         objects.clear();
         
         Window w = fieldGroup.getScene().getWindow();
@@ -263,7 +285,7 @@ public class SolarMapController implements Initializable {
         
         for (SolarSystemObject sso : si.getStarObjects()) {
 
-            Node o = createObject(sso);
+            MapObject o = createObject(sso);
             if (o != null ) {
                 objects.put(sso, o);
                 fieldGroup.getChildren().add(o);
@@ -279,13 +301,16 @@ public class SolarMapController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         EveStarExplorer.solarMapPanel = this;
-        
-        fieldGroup.getTransforms().addAll(t, rX, rY, rZ);
-
         showMoons.setGraphic(new ImageView(Images.moonIcon));
         showBelts.setGraphic(new ImageView(Images.beltIcon));
         
-        fieldGroup.getParent().setOnMousePressed(new EventHandler<MouseEvent>(){
+        Parent parent = displayGroup.getParent();
+        
+        displayGroup.getChildren().addAll(fieldGroup, labelGroup);
+        
+        fieldGroup.getTransforms().addAll(t, rX, rY, rZ);
+
+        parent.setOnMousePressed(new EventHandler<MouseEvent>(){
 
             @Override
             public void handle(MouseEvent event) {
@@ -294,7 +319,7 @@ public class SolarMapController implements Initializable {
             }
         });
         
-        fieldGroup.getParent().setOnMouseDragged(new EventHandler<MouseEvent>(){
+        parent.setOnMouseDragged(new EventHandler<MouseEvent>(){
 
             @Override
             public void handle(MouseEvent event) {

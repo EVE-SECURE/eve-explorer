@@ -6,6 +6,8 @@ package evestarexplorer;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -51,21 +53,33 @@ public class Lane extends Line {
                 
         }
         
-        
         repaintMe();
         setStartX(info.si1.x);
         setStartY(info.si1.y);
         setEndX(info.si2.x);
         setEndY(info.si2.y);
         setTranslateZ(0);
+        
+        setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println(info.id);
+                System.out.println(info.gate1 + "->" + info.gate2);
+                System.out.println(info.si1.name + "->" + info.si2.name);
+                System.out.println(info.so1.name + "->" + info.so2.name);
+                System.out.println(info.so1.isWarpSafe() + "->" + info.so2.isWarpSafe());
+            }
+        });
+        
     }
     
     final String getLaneId() {
         return info.id;
     }
 
-    private static List<Stop> unsafeStart = new ArrayList<>();
-    private static List<Stop> unsafeEnd = new ArrayList<>();
+    private static final List<Stop> unsafeStart = new ArrayList<>();
+    private static final List<Stop> unsafeEnd = new ArrayList<>();
     {
         unsafeStart.add(new Stop(0, Color.RED)); 
         unsafeStart.add(new Stop(0.2, Color.RED));

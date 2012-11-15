@@ -90,10 +90,11 @@ final public class StarInfo {
 
     public SolarSystemObject findGate(String dest) {
         
+        // TODO: возможно нужна оптиизация поиска гейта
+        String rS = "(?i).*\\(" + Pattern.quote(dest) + "\\).*";
+        Pattern p = Pattern.compile(rS);
+        
         for (SolarSystemObject so : starObjects) {
-            // TODO: возможно нужна оптиизация поиска гейта
-            String rS = "(?i).*\\(" + Pattern.quote(dest) + "\\).*";
-            Pattern p = Pattern.compile(rS);
             if (so.type == SolarSystemObject.Type.GATE) {
                 if (p.matcher(so.name).matches()) {
                     return so;

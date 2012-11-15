@@ -1,4 +1,4 @@
-SELECT eve.getSystemNameById(stargateID) as F , eve.getSystemNameById(celestialID) as T FROM `eve`.`mapjumps` into outfile 'd:\\temp\\eve\\jumps.txt';
+SELECT distinct orderKeys(getSystemNameById(stargateID), getSystemNameById(celestialID)) as T FROM mapjumps into outfile 'd:\\temp\\eve\\jumps.txt';
 
 select 
     s.solarSystemID,
@@ -21,6 +21,12 @@ into outfile 'd:\\temp\\eve\\starsystems.txt';
 
 SELECT factionID, factionName, corporationID FROM `eve`.`chrfactions` into outfile 'd:\\temp\\eve\\factions.txt';
 
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+DELIMITER $$
+
 CREATE DEFINER=`root`@`localhost` FUNCTION `getSystemNameById`(id INT(10)) RETURNS text CHARSET utf8
     DETERMINISTIC
 BEGIN
@@ -32,6 +38,26 @@ BEGIN
   return sname;
 
 END
+$$
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `orderKeys`(k1 TEXT, k2 TEXT) RETURNS text CHARSET utf8
+    DETERMINISTIC
+BEGIN
+    DECLARE res text;
+    IF (STRCMP(k1,k2) > 0) THEN 
+      select CONCAT(k1,",",k2) into res;
+    ELSE 
+      select CONCAT(k2,",",k1) into res;
+    END IF;
+    return res;
+END
+$$
 
 SELECT 
     m.itemId,

@@ -5,6 +5,7 @@
 package evestarexplorer;
 
 import com.mytdev.javafx.scene.control.AutoCompleteTextField;
+import java.text.DecimalFormat;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -60,14 +61,16 @@ public class DispUtil {
      * @param dist дистанция в метрах
      * @return читабельное значение
      */
+    private static DecimalFormat df = new DecimalFormat("#.#");
     public static String dist2HumanReadeable(double dist) {
         
-        long v = Math.round(dist / Const.AU);
-        if (v >= 1) {
-            return "" + v + "AU";
+        
+        double d = dist / Const.AU;
+        if (d >= 0.1) {
+            return "" + df.format(d) + " AU";
         } 
         
-        v = Math.round(dist / 1000000000 );
+        long v = Math.round(dist / 1000000000 );
         if (v >= 1) {
             return "" + v + "M km";
         }

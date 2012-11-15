@@ -34,7 +34,7 @@ final class LaneInfo {
 
     LaneInfo(String s) {
         String[] data;
-        data = s.split("\\t");
+        data = s.split(",");
         gate1 = data[0];
         gate2 = data[1];
         id = getKey(gate1, gate2);
