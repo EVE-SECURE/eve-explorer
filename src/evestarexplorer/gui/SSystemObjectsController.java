@@ -52,7 +52,7 @@ public class SSystemObjectsController implements Initializable {
         for (SolarSystemObject sso : si.getStarObjects()) {
             SolarObject so = new SolarObject(sso);
             data.add(so);
-            if (sso.type == SolarSystemObject.Type.SUN) { sun = so; }
+            if (sso.getType() == SolarSystemObject.Type.SUN) { sun = so; }
         }
         setCurrentObject(sun);
         objectsTbl.setItems(data);
@@ -174,7 +174,7 @@ public class SSystemObjectsController implements Initializable {
                 setText("");
                 SolarObject so = data.get(getIndex());
                 if (so != null) {
-                    switch (so.so.type) {
+                    switch (so.so.getType()) {
                         case BELT: setGraphic(new ImageView(Images.beltIcon)); break;
                         case GATE: setGraphic(new ImageView(Images.gateIcon)); break;
                         case MOON: setGraphic(new ImageView(Images.moonIcon)); break;
@@ -211,7 +211,7 @@ public class SSystemObjectsController implements Initializable {
         public SolarObject(SolarSystemObject so) {
             active.set(false);
             distance.set(Double.MAX_VALUE);
-            name.set(so.name);
+            name.set(so.getName());
             this.so = so;
         }
 

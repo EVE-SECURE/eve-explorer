@@ -67,7 +67,7 @@ public class Lane extends Line {
                 System.out.println(info.id);
                 System.out.println(info.gate1 + "->" + info.gate2);
                 System.out.println(info.si1.name + "->" + info.si2.name);
-                System.out.println(info.so1.name + "->" + info.so2.name);
+                System.out.println(info.so1.getName() + "->" + info.so2.getName());
                 System.out.println(info.so1.isWarpSafe() + "->" + info.so2.isWarpSafe());
             }
         });

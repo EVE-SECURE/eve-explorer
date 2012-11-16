@@ -8,7 +8,7 @@ package evestarexplorer;
  *
  * @author g_yaltchik
  */
-final class LaneInfo {
+public class LaneInfo {
     
     public enum Type {NORMAL, CONSTELLATION, REGION;}
     

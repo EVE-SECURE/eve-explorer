@@ -4,6 +4,7 @@
  */
 package evestarexplorer;
 
+import evestarexplorer.api.ConquerableList;
 import evestarexplorer.api.*;
 
 /**
@@ -14,6 +15,7 @@ public class ApiInfoLoader {
     
     public Sovereignty sovereignty = new Sovereignty();
     public AllianceList alliances = new AllianceList();
+    public ConquerableList conquerables = new ConquerableList();
     
     private ApiInfoLoader() {
     }

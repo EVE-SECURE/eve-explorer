@@ -40,8 +40,8 @@ public class JBInfo {
     
     private void updateProps() {
         isActive.set(true);
-        from.set((fromObj != null) ? fromObj.name : fromSystem.name);
-        to.set(toObj != null ? toObj.name : toSystem.name);
+        from.set((fromObj != null) ? fromObj.getName() : fromSystem.name);
+        to.set(toObj != null ? toObj.getName() : toSystem.name);
         
         SovInfo sFrom = fromSystem.getSovInfo();
         SovInfo sTo = toSystem.getSovInfo();
@@ -76,8 +76,8 @@ public class JBInfo {
     public String serialize() {
         return "" + fromSystem.id
                 + "\t" + toSystem.id
-                + "\t" + (fromObj != null ? fromObj.id : -1)
-                + "\t" + (toObj != null ? toObj.id : -1)
+                + "\t" + (fromObj != null ? fromObj.getId() : -1)
+                + "\t" + (toObj != null ? toObj.getId() : -1)
                 + "\t" + (isActive.get() ? 1 : 0)
                 + "\t" + (hasCynogen.get() ? 1: 0)
                 + "\t" + (hasCynojammer.get() ? 1: 0)
@@ -85,11 +85,11 @@ public class JBInfo {
     }
     
     private void calculateId() {
-        if (toObj.id > fromObj.id) {
-            id = "" + toObj.id + "_" + fromObj.id;
+        if (toObj.getId() > fromObj.getId()) {
+            id = "" + toObj.getId() + "_" + fromObj.getId();
         }
         else {
-            id = "" + fromObj.id + "_" + toObj.id;
+            id = "" + fromObj.getId() + "_" + toObj.getId();
         }
     }
     

@@ -64,9 +64,9 @@ final public class StarInfo {
     
     public List<SolarSystemObject> getStarObjects() { return starObjects; }
     public void addSolarObject(SolarSystemObject so) { 
-        assert id == so.systemId; 
+        assert id == so.getSystemId(); 
         
-        if (so.type == SolarSystemObject.Type.STATION) {
+        if (so.getType() == SolarSystemObject.Type.STATION) {
             _hasStation = true;
         }
         
@@ -95,8 +95,8 @@ final public class StarInfo {
         Pattern p = Pattern.compile(rS);
         
         for (SolarSystemObject so : starObjects) {
-            if (so.type == SolarSystemObject.Type.GATE) {
-                if (p.matcher(so.name).matches()) {
+            if (so.getType() == SolarSystemObject.Type.GATE) {
+                if (p.matcher(so.getName()).matches()) {
                     return so;
                 }
             }

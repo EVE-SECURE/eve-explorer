@@ -61,6 +61,7 @@ public class ControlPanelController implements Initializable {
     @FXML public Button apiLoad;
     @FXML public Label apiSovereignityStatus;
     @FXML public Label apiAllianceListStatus;
+    @FXML public Label apiConquerableListStatus;
     
     @FXML public AutoCompleteTextField<String> gateFrom;
     @FXML public AutoCompleteTextField<String> gateDest;
@@ -167,6 +168,17 @@ public class ControlPanelController implements Initializable {
                 showApiStatus(apiSovereignityStatus, null, loader.sovereignty.updatedAt());
             } catch (ApiException ex) {
                 showApiStatus(apiSovereignityStatus, ex, new Date());
+            }
+            message += "OK\n";
+            updateMessage(message);
+            
+            try {
+                message += "Claimable stations List loading ... ";
+                updateMessage(message);
+                loader.conquerables.update();
+                showApiStatus(apiConquerableListStatus, null, loader.conquerables.updatedAt());
+            } catch (ApiException ex) {
+                showApiStatus(apiConquerableListStatus, ex, new Date());
             }
             message += "OK\n";
             updateMessage(message);

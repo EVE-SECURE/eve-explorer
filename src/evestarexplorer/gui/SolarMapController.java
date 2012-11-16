@@ -19,7 +19,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
@@ -82,7 +81,7 @@ public class SolarMapController implements Initializable {
     private double getMaxDistance(Iterable<SolarSystemObject> starObjects) {
         double distance = 0;
         for (SolarSystemObject sso : starObjects) {
-            distance = Math.max(distance, Math.sqrt(sso.x * sso.x + sso.y * sso.y + sso.z * sso.z));
+            distance = Math.max(distance, Math.sqrt(sso.getX() * sso.getX() + sso.getY() * sso.getY() + sso.getZ() * sso.getZ()));
         }
         return distance;
     }
@@ -100,9 +99,9 @@ public class SolarMapController implements Initializable {
         public Orbit(SolarSystemObject sso) {
             super();
             radius = Math.sqrt(
-                      sso.x * sso.x 
-                    + sso.y * sso.y 
-                    + sso.z * sso.z);
+                      sso.getX() * sso.getX() 
+                    + sso.getY() * sso.getY() 
+                    + sso.getZ() * sso.getZ());
             
             orbit = CircleBuilder.create()
                     .radius(radius*scale.get())
@@ -115,12 +114,12 @@ public class SolarMapController implements Initializable {
             final Rotate rz = new Rotate(0, Rotate.Z_AXIS);
             final Rotate ry = new Rotate(0, Rotate.Y_AXIS);
             
-            double xz = Math.sqrt(sso.x*sso.x + sso.z*sso.z);
-            double angle = Math.toDegrees(Math.asin(sso.z/xz));
-            if (sso.x < 0) { angle = 180 - angle; }
+            double xz = Math.sqrt(sso.getX()*sso.getX() + sso.getZ()*sso.getZ());
+            double angle = Math.toDegrees(Math.asin(sso.getZ()/xz));
+            if (sso.getX() < 0) { angle = 180 - angle; }
             rz.setAngle(angle);
             
-            angle = Math.toDegrees(Math.asin(-sso.y/Math.sqrt(sso.z*sso.z + xz*xz)));
+            angle = Math.toDegrees(Math.asin(-sso.getY()/Math.sqrt(sso.getZ()*sso.getZ() + xz*xz)));
             ry.setAngle(angle);
             
             this.getTransforms().addAll(rz, ry);
@@ -157,9 +156,9 @@ public class SolarMapController implements Initializable {
                     .build();
             
             imgTrans.getChildren().add(image);
-            imgTrans.translateXProperty().bind(scale.multiply(this.sso.x));
-            imgTrans.translateYProperty().bind(scale.multiply(this.sso.z));
-            imgTrans.translateZProperty().bind(scale.multiply(this.sso.y));
+            imgTrans.translateXProperty().bind(scale.multiply(this.sso.getX()));
+            imgTrans.translateYProperty().bind(scale.multiply(this.sso.getZ()));
+            imgTrans.translateZProperty().bind(scale.multiply(this.sso.getY()));
             this.getChildren().add(imgTrans);
         }
 
@@ -209,7 +208,7 @@ public class SolarMapController implements Initializable {
         public Gate(SolarSystemObject s) {
             super(s, Images.gateIcon);
             
-            label.setText(s.name);
+            label.setText(s.getName());
             label.setFont(new Font(10));
             label.setFill(Color.GRAY);
             
@@ -246,7 +245,7 @@ public class SolarMapController implements Initializable {
 
     private MapObject createObject(SolarSystemObject s) {
     
-        switch (s.type) {
+        switch (s.getType()) {
             case SUN: return new Sun(s);
             case PLANET: return new Planet(s);
             case MOON: break;

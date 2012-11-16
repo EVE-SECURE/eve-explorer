@@ -40,10 +40,27 @@ public class Star extends Group {
         return Star.alwaysShowText;
     }
     
-    public void repaintText() {
+    final public void repaintText() {
         text.setVisible(selected || alwaysShowText);
         text.setFill(selected ? Color.BLACK : Color.GRAY);
         text.toFront();
+    }
+    
+    final public void repaintBody() {
+
+        double size = STAR_SIZE;
+        
+        body.setHeight(size);
+        body.setWidth(size);
+        body.setStrokeType(StrokeType.OUTSIDE);
+        body.setSmooth(true);
+        
+        body.setArcHeight(info.hasStation() ? 0 : size);
+        body.setArcWidth(info.hasStation() ? 0 : size);
+        
+        setLayoutX(-size/2);
+        setLayoutY(-size/2);
+        
     }
     
     private void repaintMe() {
@@ -103,20 +120,18 @@ public class Star extends Group {
         
         double size = STAR_SIZE;
         
-        body.setHeight(size);
-        body.setWidth(size);
-        body.setStrokeType(StrokeType.OUTSIDE);
+//        body.setHeight(size);
+//        body.setWidth(size);
+//        body.setStrokeType(StrokeType.OUTSIDE);
+//        
+//        if (info.hasStation() == false) {
+//            body.setArcHeight(size);
+//            body.setArcWidth(size);
+//        }
         
-        if (info.hasStation() == false) {
-            body.setArcHeight(size);
-            body.setArcWidth(size);
-        }
-        
-        body.setSmooth(true);
+        repaintBody();
         repaintMe();
         
-        setLayoutX(-size/2);
-        setLayoutY(-size/2);
         setTranslateX(info.x);
         setTranslateY(info.y);
         setTranslateZ(0);

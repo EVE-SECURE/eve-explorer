@@ -39,12 +39,12 @@ public class World {
     
     private double currentScale = 1.0;
     
-    Map<String, Star> worldStars = new HashMap<>();
-    Map<String, Lane> worldLanes = new HashMap<>();
-    Map<String, StarInfo> starsIndexByName = new HashMap<>();
-    Map<Long, StarInfo> starsIndexById = new HashMap<>();
-    Map<String, LaneInfo> lanesIndex = new HashMap<>();
-    Map<Long, SolarSystemObject> solarObjIndex = new HashMap<>();
+    public final Map<String, Star> worldStars = new HashMap<>();
+    public final Map<String, Lane> worldLanes = new HashMap<>();
+    public final Map<String, StarInfo> starsIndexByName = new HashMap<>();
+    public final Map<Long, StarInfo> starsIndexById = new HashMap<>();
+    public final Map<String, LaneInfo> lanesIndex = new HashMap<>();
+    public final Map<Long, SolarSystemObject> solarObjIndex = new HashMap<>();
     
     double minX = Double.MAX_VALUE;
     double minY = Double.MAX_VALUE;
@@ -126,6 +126,14 @@ public class World {
         al.updateSovList(starsIndexByName);
         
         sPanel.apiUpdated();
+        
+        for (SolarSystemObject so : loader.conquerables.getList().values()) {
+            addSolarObject(so);
+        }
+        
+        for (Star s : getStars()) {
+            s.repaintBody();
+        }
         
     }
     
@@ -459,16 +467,23 @@ public class World {
         
     }
     
-    public void addSolarObject(String s) {
-        SolarSystemObject so = new SolarSystemObject(s);
-        solarObjIndex.put(so.id, so);
+    public void addSolarObject(SolarSystemObject so) {
         
-        StarInfo si = starsIndexById.get(so.systemId);
+        SolarSystemObject old = solarObjIndex.put(so.getId(), so);
+        // это ошибка, если такой объект уже есть
+        assert old == null : old;
+        
+        StarInfo si = starsIndexById.get(so.getSystemId());
         // мы могли найти систему Джовов, пропускаем ее
         if (si != null) {
             si.addSolarObject(so);
         }
         
+    }
+    
+    public void addSolarObject(String s) {
+        SolarSystemObject so = new SolarSystemObject(s);
+        addSolarObject(so);
     }
     
     public void addLane(String s) {

@@ -26,15 +26,71 @@ public class SolarSystemObject {
         
     }
     
-    public final long id;
-    public final long systemId;
-    public final Type type;
-    public final String name;
-    public final double x;
-    public final double y;
-    public final double z;
+    private long id = -1;
+    private long systemId = -1;
+    private Type type = Type.NONE;
+    private String name = "";
+    private double x = 0;
+    private double y = 0;
+    private double z = 0;
     
     private double nearestObjectDistance = Double.MAX_VALUE;
+
+    public long getId() {
+        return id;
+    }
+
+    public long getSystemId() {
+        return systemId;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getZ() {
+        return z;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setSystemId(long systemId) {
+        this.systemId = systemId;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public void setZ(double z) {
+        this.z = z;
+    }
 
     public boolean isWarpSafe() {
         return (nearestObjectDistance < WarpSafety.DSCAN_RANGE);
@@ -84,4 +140,7 @@ public class SolarSystemObject {
         
     }
     
+    protected SolarSystemObject() {
+        
+    }
 }
