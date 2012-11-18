@@ -116,6 +116,12 @@ public class World {
             ApiSystemSovereignty sov = loader.sovereignty.getInfo().get((int)si.id);
             si.updateSovInfo(new SovInfo(sov));
             
+            long ships = loader.kills.getShipKills(si.id);
+            long pods = loader.kills.getPodKills(si.id);
+            long npcs = loader.kills.getNpcKills(si.id);
+            
+            si.setKillsInfo(ships, pods, npcs);
+            
         }
         
         Sovereignty sov = ApiInfoLoader.getInstance().sovereignty;
@@ -133,6 +139,7 @@ public class World {
         
         for (Star s : getStars()) {
             s.repaintBody();
+            s.updateLabel();
         }
         
     }

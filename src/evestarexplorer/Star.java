@@ -12,6 +12,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 /**
  *
@@ -38,6 +39,21 @@ public class Star extends Group {
     
     public static boolean getAlwaysShowText() {
         return Star.alwaysShowText;
+    }
+    
+    private String createLabel() {
+        if (info.getShlipKills() != -1) {
+            return info.name + "\n(" + info.getShlipKills() + "/" +
+                    info.getPodKills() + "/" + info.getNpcKills() + ")";
+        }
+        else {
+            return info.name;
+        }
+    }
+    
+    final public void updateLabel() {
+        text.setText(createLabel());
+        text.setTextAlignment(TextAlignment.CENTER);
     }
     
     final public void repaintText() {
@@ -190,13 +206,13 @@ public class Star extends Group {
             }
         });
 
-        text.setText(info.name);
         text.setFont(new Font(10));
         text.setFill(Color.GRAY);
         text.setLayoutX(4);
         text.setLayoutY(-4);
         text.setVisible(false);
         text.setMouseTransparent(true);
+        updateLabel();
         
         getChildren().addAll(body, text);
         

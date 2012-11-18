@@ -116,19 +116,19 @@
                   <children>
                     <GridPane id="GridPane" layoutX="14.0" layoutY="14.0">
                       <children>
-                        <Label font="$x1" text="Sovereignty:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="0">
+                        <Label font="$x1" text="Sovereignty:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                           <GridPane.margin>
                             <Insets right="4.0" fx:id="x3" />
                           </GridPane.margin>
                         </Label>
-                        <Label font="$x1" text="Alliance List:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.margin="$x3" GridPane.rowIndex="1" />
+                        <Label font="$x1" text="Alliance List:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.margin="$x3" GridPane.rowIndex="0" />
                         <Label font="$x1" text="Stations List:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.margin="$x3" GridPane.rowIndex="2" />
-                        <Label fx:id="apiSovereignityStatus" text="not loaded" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Label fx:id="apiSovereignityStatus" text="not loaded" GridPane.columnIndex="1" GridPane.rowIndex="1">
                           <GridPane.margin>
                             <Insets />
                           </GridPane.margin>
                         </Label>
-                        <Label fx:id="apiAllianceListStatus" text="not loaded" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="apiAllianceListStatus" text="not loaded" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                         <Label id="apiAllianceListStatus" fx:id="apiConquerableListStatus" text="not loaded" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                       </children>
                       <columnConstraints>

@@ -32,8 +32,42 @@ final public class StarInfo {
     final private StarInfoList neigbors = new StarInfoList();
     final private List<SolarSystemObject> starObjects = new ArrayList<>();
     private boolean _hasStation = false;
+    
+    private long podKills = -1;
+    private long shipKills = -1;
+    private long npcKills = -1;
 
     private SovInfo sov;
+
+    public long getPodKills() {
+        return podKills;
+    }
+
+    public void setPodKills(long podKills) {
+        this.podKills = podKills;
+    }
+
+    public long getShlipKills() {
+        return shipKills;
+    }
+
+    public void setShipKills(long shipKills) {
+        this.shipKills = shipKills;
+    }
+
+    public long getNpcKills() {
+        return npcKills;
+    }
+
+    public void setNpcKills(long npcKills) {
+        this.npcKills = npcKills;
+    }
+    
+    public void setKillsInfo(long shipKills, long podKills, long npcKills) {
+        this.shipKills = shipKills;
+        this.podKills = podKills;
+        this.npcKills = npcKills;
+    }
     
     public boolean hasStation() {
         return _hasStation;

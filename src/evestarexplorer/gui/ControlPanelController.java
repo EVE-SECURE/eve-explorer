@@ -62,6 +62,7 @@ public class ControlPanelController implements Initializable {
     @FXML public Label apiSovereignityStatus;
     @FXML public Label apiAllianceListStatus;
     @FXML public Label apiConquerableListStatus;
+    @FXML public Label apiKillsStatus;
     
     @FXML public AutoCompleteTextField<String> gateFrom;
     @FXML public AutoCompleteTextField<String> gateDest;
@@ -183,12 +184,21 @@ public class ControlPanelController implements Initializable {
             message += "OK\n";
             updateMessage(message);
             
+            try {
+                message += "Kills Info loading ... ";
+                updateMessage(message);
+                loader.kills.update();
+                showApiStatus(apiKillsStatus, null, loader.kills.updatedAt());
+            } catch (ApiException ex) {
+                showApiStatus(apiKillsStatus, ex, new Date());
+            }
+            message += "OK\n";
+            updateMessage(message);
+            
             Platform.runLater(new Runnable() {
                 @Override 
                 public void run() {
                     starField.fireEvent(new StarExplorerEvent(StarExplorerEvent.API_UPDATED));
-//                    starField.fireEvent(new StarExplorerEvent(StarExplorerEvent.LONG_ACTION_ENDED));
-                    //splash.hide();
                 }
             });
             return null;
