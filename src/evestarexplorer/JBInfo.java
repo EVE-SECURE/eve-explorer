@@ -15,8 +15,10 @@ import javafx.beans.property.StringProperty;
  */
 public class JBInfo {
     
-    private final StarInfo fromSystem;
-    private final StarInfo toSystem;
+    public static double JB_REACH = Const.LY * 5;
+    
+    private StarInfo fromSystem;
+    private StarInfo toSystem;
     private String id;
 
     private SolarSystemObject fromObj;
@@ -27,16 +29,12 @@ public class JBInfo {
     private SimpleStringProperty from;
     private SimpleStringProperty to;
     private SimpleStringProperty shortName;
-    private SimpleBooleanProperty hasCynogen;
-    private SimpleBooleanProperty hasCynojammer;
     
     public BooleanProperty isActiveProperty() { return isActive; }
     public BooleanProperty isValidProperty() { return isValid; }
     public StringProperty fromProperty() { return from; }
     public StringProperty toProperty() { return to; }
     public StringProperty shortNameProperty() { return shortName; }
-    public BooleanProperty hasCynogenProperty() { return hasCynogen; }
-    public BooleanProperty hasCynojummerProperty() { return hasCynojammer; }
     
     private void updateProps() {
         isActive.set(true);
@@ -79,24 +77,25 @@ public class JBInfo {
                 + "\t" + (fromObj != null ? fromObj.getId() : -1)
                 + "\t" + (toObj != null ? toObj.getId() : -1)
                 + "\t" + (isActive.get() ? 1 : 0)
-                + "\t" + (hasCynogen.get() ? 1: 0)
-                + "\t" + (hasCynojammer.get() ? 1: 0)
                 ;
     }
     
-    private void calculateId() {
-        if (toObj.getId() > fromObj.getId()) {
-            id = "" + toObj.getId() + "_" + fromObj.getId();
+    private void normalizeId() {
+
+        if (fromSystem.id > toSystem.id) {
+            StarInfo f1;
+            f1 = fromSystem;
+            fromSystem = toSystem;
+            toSystem = f1;
         }
-        else {
-            id = "" + fromObj.getId() + "_" + toObj.getId();
-        }
+        
+        id = fromSystem.id + "_" + toSystem.id;
     }
     
     public JBInfo(String serial) throws Exception {
         
         String[] data = serial.split("\t");
-        if (data.length != 7) { throw new Exception("Invalid string");}
+        if (data.length != 5) { throw new Exception("Invalid string");}
         
         long val;
         val = Long.parseLong(data[0]);
@@ -106,6 +105,8 @@ public class JBInfo {
         val = Long.parseLong(data[1]);
         toSystem = EveStarExplorer.world.starsIndexById.get(val);
         if (toSystem == null) { throw new Exception("Invalid string");}
+
+        normalizeId();
         
         // Это нормально получить тут null
         val = Long.parseLong(data[2]);
@@ -116,21 +117,30 @@ public class JBInfo {
         
         val = Long.parseLong(data[4]);
         isActive.set(val == 1);
-
-        val = Long.parseLong(data[5]);
-        hasCynogen.set(val == 1);
-
-        val = Long.parseLong(data[56]);
-        hasCynojammer.set(val == 1);
         
-        calculateId();
+        updateProps();
+
     }
+    
+    public JBInfo(StarInfo fromSys, SolarSystemObject fromObj, 
+                  StarInfo toSys, SolarSystemObject toObj) {
+        
+        fromSystem = fromSys;
+        toSystem = toSys;
+        normalizeId();
+
+        this.fromObj = fromSys.findSolarObj(fromObj);
+        this.toObj = fromSys.findSolarObj(toObj);
+        
+        updateProps();
+    }
+    
     
     public JBInfo(StarInfo from, StarInfo to) {
         
         fromSystem = from;
         toSystem = to;
-        calculateId();
+        normalizeId();
         
         updateProps();
     }

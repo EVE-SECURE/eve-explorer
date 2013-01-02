@@ -17,10 +17,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.CheckMenuItemBuilder;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
@@ -46,12 +51,16 @@ public class World {
     public final Map<String, LaneInfo> lanesIndex = new HashMap<>();
     public final Map<Long, SolarSystemObject> solarObjIndex = new HashMap<>();
     
+    private final JBCreator jbCreator = new JBCreator();
+    public final WorldContextMenu menu = new WorldContextMenu();
+    
+    private boolean jbPlanningMode = false;
+    
     double minX = Double.MAX_VALUE;
     double minY = Double.MAX_VALUE;
     double maxX = Double.MIN_VALUE;
     double maxY = Double.MIN_VALUE;
     
-    @SuppressWarnings("LeakingThisInConstructor")
     World(final Group root, ControlPanelController cp, SettingsPanelController sp) {
         
         rootScene = root;
@@ -106,6 +115,41 @@ public class World {
             }
             
         });
+        
+        root.addEventHandler(StarExplorerEvent.JBMAP_ADD_STAR, new EventHandler<StarExplorerEvent>() {
+
+            @Override
+            public void handle(StarExplorerEvent event) {
+                boolean ready = jbCreator.addStar(event.star.info);
+                if (ready) {
+                    World.this.activateAll();
+                }
+                else {
+                    World.this.activateInDistance(event.star, JBInfo.JB_REACH, new StarCheker() {
+
+                        @Override
+                        public boolean check(Star s) {
+                            return s.info.getSovInfo().isClaimable();
+                        }
+                    });
+                    event.star.setInactive(true);
+                }
+            }
+            
+        });
+        
+        root.addEventHandler(StarExplorerEvent.MAP_STAR_ENTERED, new EventHandler<StarExplorerEvent>() {
+
+            @Override
+            public void handle(StarExplorerEvent event) {
+                
+                if (jbPlanningMode) {
+                    World.this.highlightInDistance(event.star, JBInfo.JB_REACH, null);
+                }
+                
+            }
+            
+        });
     }
     
     void updateApiInfo() {
@@ -138,7 +182,7 @@ public class World {
         }
         
         for (Star s : getStars()) {
-            s.repaintBody();
+            s.reshapeBody();
             s.updateLabel();
         }
         
@@ -248,7 +292,7 @@ public class World {
 
     }
     
-    class CompareByGateDistance implements Comparator {
+    class CompareByGateTravelDistance implements Comparator {
 
         @Override
         public int compare(Object t1, Object t2) {
@@ -271,7 +315,7 @@ public class World {
     
     public List<String> findPath(String from, String dest) {
         
-        CompareByGateDistance cmp = new CompareByGateDistance();
+        CompareByGateTravelDistance cmp = new CompareByGateTravelDistance();
         SortedSet<StarInfo> unchecked = new TreeSet<>(cmp);
         
         StarInfo siFrom = starsIndexByName.get(from);
@@ -355,6 +399,34 @@ public class World {
         
         return path;
         
+    }
+    
+    public void highlightInDistance(Star from, double distance, StarCheker checker) {
+        
+        for (Star s : worldStars.values()) {
+            
+            boolean inRange = from.info.distanceTo(s.info) <= distance;
+            boolean check_passed = (checker == null) ? true : checker.check(s);
+            s.setHighlighted(inRange && check_passed);
+            
+        }
+        
+    }
+    
+    public void activateInDistance(Star from, double distance, StarCheker checker) {
+        
+        for (Star s : worldStars.values()) {
+            
+            boolean inRange = from.info.distanceTo(s.info) <= distance;
+            boolean check_passed = (checker == null) ? true : checker.check(s);
+            s.setInactive(!(inRange && check_passed));
+            
+        }
+        
+    }
+    
+    public void activateAll() {
+        for (Star s : worldStars.values()) { s.setInactive(false); }
     }
     
     private void doSetScale(PathHighlighter phl, double scale) {
@@ -510,6 +582,36 @@ public class World {
         
         s1.addGate(s2.info);
         s2.addGate(s1.info);
+        
+    }
+    
+    public abstract static class StarCheker {
+        public abstract boolean check(Star s);
+    }
+    
+    public class WorldContextMenu extends ContextMenu {
+
+        private final CheckMenuItem jbMode;
+        
+        public WorldContextMenu() {
+            super();
+            setConsumeAutoHidingEvents(false);
+            setAutoFix(true);
+            
+            jbMode = CheckMenuItemBuilder.create()
+                    .selected(false)
+                    .text("JB Planning mode")
+                    .onAction(new EventHandler<ActionEvent>(){
+                        @Override
+                        public void handle(ActionEvent t) {
+                            System.out.println("JB Planning mode: " + jbMode.isSelected());
+                            jbPlanningMode = jbMode.isSelected();
+                        }
+                    })
+                    .build();
+            
+            this.getItems().addAll(jbMode);
+        }
         
     }
     

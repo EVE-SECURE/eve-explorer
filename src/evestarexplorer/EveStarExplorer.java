@@ -70,7 +70,6 @@ public class EveStarExplorer extends Application {
     static public Stage ssysPanelStage;
     static public Stage solarMapStage;
     
-    
     public static World world;
 
     static double getWorldX (double sceneX) {
@@ -287,6 +286,9 @@ public class EveStarExplorer extends Application {
                     setPanelStage.show();
                     setPanelStage.setIconified(false);
                 }
+                else if(event.getButton() == MouseButton.SECONDARY) {
+                    world.menu.show(s.getWindow(), event.getScreenX(), event.getScreenY());
+                }
             }
 
         });
@@ -294,10 +296,12 @@ public class EveStarExplorer extends Application {
         s.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent me) {
-                mouseOldX = me.getX();
-                mouseOldY = me.getY();
-                mousePosX = me.getX();
-                mousePosY = me.getY();
+                if (me.getButton() == MouseButton.PRIMARY) {
+                    mouseOldX = me.getX();
+                    mouseOldY = me.getY();
+                    mousePosX = me.getX();
+                    mousePosY = me.getY();
+                }
             }
 
         });
@@ -305,6 +309,8 @@ public class EveStarExplorer extends Application {
         s.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent me) {
+
+                if (me.getButton() != MouseButton.PRIMARY) { return; }
                 
                 mouseOldX = mousePosX;
                 mouseOldY = mousePosY;
@@ -315,9 +321,7 @@ public class EveStarExplorer extends Application {
                 mouseDeltaY = mousePosY - mouseOldY;
                 
                 if (me.isPrimaryButtonDown()) {
-                    
                     rootCam.moveCamPos(mouseDeltaX, mouseDeltaY);
-
                 }
             }
 
@@ -350,7 +354,7 @@ public class EveStarExplorer extends Application {
     @SuppressWarnings("SleepWhileInLoop")
     void populateWorld() {
         
-        Task<Void> task = new Task<Void>() {
+        final Task<Void> task = new Task<Void>() {
 
             @Override
             protected Void call() throws Exception {

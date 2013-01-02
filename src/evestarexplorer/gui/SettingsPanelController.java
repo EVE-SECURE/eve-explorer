@@ -14,6 +14,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -22,9 +24,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -38,13 +42,15 @@ public class SettingsPanelController implements Initializable {
 
     final Stage standUpdater = new Stage();
 
-    @FXML TableView allianceTbl;
-    @FXML TableColumn<AllianceInfo, String> allyNameCol;
-    @FXML TableColumn<AllianceInfo, String> allySNameCol;
-    @FXML TableColumn<AllianceInfo, Long> allyMembersCol;
-    @FXML TableColumn<AllianceInfo, Integer> allyClaimSizeCol;
-    @FXML TableColumn<AllianceInfo, Integer> allyStandingCol;
+    @FXML protected TableView allianceTbl;
+    @FXML protected TableColumn<AllianceInfo, String> allyNameCol;
+    @FXML protected TableColumn<AllianceInfo, String> allySNameCol;
+    @FXML protected TableColumn<AllianceInfo, Long> allyMembersCol;
+    @FXML protected TableColumn<AllianceInfo, Integer> allyClaimSizeCol;
+    @FXML protected TableColumn<AllianceInfo, Integer> allyStandingCol;
     
+    @FXML protected HBox buttonsBox;
+    @FXML protected HBox allyButtonsBox;
     @FXML protected Button setStandings;
     
     @FXML protected void setStandingClicked() {
@@ -62,24 +68,58 @@ public class SettingsPanelController implements Initializable {
     
     // ==================================================================
     
-    @FXML TableView jbTbl;
-    @FXML TableColumn<JBInfo, Boolean> jbActiveCol;
-    @FXML TableColumn<JBInfo, String> jbFromCol;
-    @FXML TableColumn<JBInfo, String> jbToCol;
-    @FXML TableColumn<JBInfo, String> jbAllianceCol;
-    @FXML TableColumn<JBInfo, Boolean> jbCynoCol;
-    @FXML TableColumn<JBInfo, Boolean> jbJammCol;
+    @FXML protected TableView jbTbl;
+    @FXML protected TableColumn<JBInfo, Boolean> jbActiveCol;
+    @FXML protected TableColumn<JBInfo, String> jbFromCol;
+    @FXML protected TableColumn<JBInfo, String> jbToCol;
+    @FXML protected TableColumn<JBInfo, String> jbAllianceCol;
     
-    @FXML Button jbAddBtn;
-    @FXML Button jbImportBtn;
-    @FXML Button jbDelAllBtn;
+    @FXML protected HBox jbButtonsBox;
+    @FXML protected Button jbAddBtn;
+    @FXML protected Button jbImportBtn;
+    @FXML protected Button jbDelAllBtn;
     
+    @FXML void closed() {
+        System.out.println("Closed!!!");
+    }
+    @FXML void changed() {
+        System.out.println("Changed!!!");
+    }
+    
+    @FXML Tab allyTab;
+    @FXML Tab jbTab;
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         EveStarExplorer.setPanel = this;
+        
+        jbTab.selectedProperty().addListener(new ChangeListener<Boolean>(){
+
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                
+                if (newValue == true) {
+                    buttonsBox.getChildren().clear();
+                    buttonsBox.getChildren().add(jbButtonsBox);
+                }
+                
+            }
+        });
+        
+        allyTab.selectedProperty().addListener(new ChangeListener<Boolean>(){
+
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                
+                if (newValue == true) {
+                    buttonsBox.getChildren().clear();
+                    buttonsBox.getChildren().add(allyButtonsBox);
+                }
+                
+            }
+        });
         
         allyNameCol.setCellValueFactory(new PropertyValueFactory("fullName"));
         allySNameCol.setCellValueFactory(new PropertyValueFactory("shortName"));
@@ -105,8 +145,6 @@ public class SettingsPanelController implements Initializable {
         jbFromCol.setCellFactory(new PropertyValueFactory("from"));
         jbToCol.setCellFactory(new PropertyValueFactory("to"));
         jbAllianceCol.setCellFactory(new PropertyValueFactory("shortName"));
-        jbCynoCol.setCellFactory(new PropertyValueFactory("hasCynogen"));
-        jbJammCol.setCellFactory(new PropertyValueFactory("hasCynojammer"));
 
     }    
 }

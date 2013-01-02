@@ -20,8 +20,12 @@ public class StarExplorerEvent extends Event {
     public static final EventType<StarExplorerEvent> LONG_ACTION_STARTED = new EventType<>("LONG_ACTION_STARTED");
     public static final EventType<StarExplorerEvent> LONG_ACTION_ENDED = new EventType<>("LONG_ACTION_ENDED");
     public static final EventType<StarExplorerEvent> API_UPDATED = new EventType<>("API_UPDATED");
+    public static final EventType<StarExplorerEvent> JBMAP_ADD_STAR = new EventType<>("JBMAP_ADD_STAR");
+    public static final EventType<StarExplorerEvent> MAP_STAR_ENTERED = new EventType<>("MAP_STAR_ENTERED");
+    public static final EventType<StarExplorerEvent> MAP_STAR_LEAVED = new EventType<>("MAP_STAR_LEAVED");
     
     List<String> path = null;
+    Star star = null;
     
     public StarExplorerEvent(EventType<? extends Event> eventType) {
         super(eventType);
@@ -32,5 +36,9 @@ public class StarExplorerEvent extends Event {
         this.path = path;
     }
     
+    public StarExplorerEvent(Star star, EventType<StarExplorerEvent> event) {
+        super(event);
+        this.star = star;
+    }
     
 }

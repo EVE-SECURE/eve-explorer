@@ -119,7 +119,7 @@ final public class StarInfo {
         double dx = x - si.x;
         double dy = y - si.y;
         double dz = z - si.z;
-        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+        return Math.sqrt(dx * dx + dy * dy + dz * dz) * 1e14;
     }
 
     public SolarSystemObject findGate(String dest) {
@@ -140,6 +140,28 @@ final public class StarInfo {
     }
     
     /**
+     *
+     * @param object объект, наличие которого проверяется в солнечной системе
+     * если объект не принадлежит этой солнечной системе или не определен, то возвращается
+     * объект SUN текущей системы (считается, что оно есть всегда)
+     * @return object или Sun
+     */
+    public SolarSystemObject findSolarObj(SolarSystemObject object) {
+        
+        if (object == null || this.id != object.getSystemId()) {
+            for (SolarSystemObject so : this.starObjects) {
+                if (so.getType() == SolarSystemObject.Type.SUN) {
+                    return so;
+                }
+            }
+            throw new AssertionError("System without sun:" + this.id);
+        }
+        else {
+            return object;
+        }
+    }
+    
+    /**
      * Система с клаймом всегда "больше" системы без клайма
      * Если обе системы с клаймом, или обе без, то сравниваются их id
      * @param s1
@@ -154,5 +176,6 @@ final public class StarInfo {
         return Long.compare(this.id, si.id);
 
     }
+
     
 }

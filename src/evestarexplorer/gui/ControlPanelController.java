@@ -285,6 +285,7 @@ public class ControlPanelController implements Initializable {
     @FXML public Label dbgScale;
     @FXML public Label dbgMouseX;
     @FXML public Label dbgMouseY;
+    @FXML public Label dbgMessage;
     
 
     /**

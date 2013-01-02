@@ -11,6 +11,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -44,7 +46,7 @@ public class LoadingSplashController implements Initializable {
         stage.hide();
     }
     
-    public void start(Task<Void> task) {
+    public void start(final Task<Void> task) {
         progress.progressProperty().bind(task.progressProperty());
         info.textProperty().bind(task.messageProperty());
         taskIsRunning = new SimpleBooleanProperty();
@@ -62,6 +64,21 @@ public class LoadingSplashController implements Initializable {
             }
             
         });
+        
+        task.setOnFailed(new EventHandler<WorkerStateEvent>(){
+
+            @Override
+            @SuppressWarnings("CallToThreadDumpStack")
+            public void handle(WorkerStateEvent event) {
+                System.out.println("Task failed!");
+                Throwable ex = task.getException();
+                if (ex != null) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        
         show();
         new Thread(task).start();
     }
